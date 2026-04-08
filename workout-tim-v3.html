@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tim's Program">
+<meta name="theme-color" content="#080a0f">
+<title>Tim's 90-Day Program</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#080a0f;--bg2:#0d1018;--bg3:#121620;
+  --border:#1e2330;--border2:#252d3d;
+  --text:#e8e4dc;--muted:#4a5168;--muted2:#6b7590;
+  --gold:#c9a84c;--gold2:#e8c97a;--gold-dim:#3d2e0f;
+  --green:#4a9e7a;--green2:#6dbf9e;--green-dim:#0f2820;
+  --blue:#4a7ab5;--blue2:#7aaae0;--blue-dim:#0f1e30;
+  --rose:#b56a6a;--rose2:#e09090;--rose-dim:#2a1010;
+  --amber:#d4853a;--amber2:#f0a860;--amber-dim:#2a1800;
+  --safe-top:env(safe-area-inset-top,44px);
+  --safe-bottom:env(safe-area-inset-bottom,34px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{background:var(--bg);}
+body{font-family:'DM Mono',monospace;background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.35;}
+
+/* HEADER */
+.header{position:sticky;top:0;z-index:100;padding-top:var(--safe-top);background:rgba(8,10,15,.94);backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);border-bottom:1px solid var(--border);}
+.header-inner{padding:13px 18px;display:flex;align-items:center;justify-content:space-between;}
+.header-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--text);}
+.header-sub{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.day-badge{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--gold);}
+
+/* HERO */
+.hero{padding:24px 18px 0;}
+.hero-name{font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:300;line-height:1;color:var(--text);}
+.hero-name em{font-style:italic;color:var(--gold);}
+.hero-meta{display:flex;gap:16px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+.hero-stat{flex:1;}
+.hero-stat-val{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--gold2);line-height:1;}
+.hero-stat-lbl{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+/* PROGRESS */
+.progress-wrap{padding:18px 18px 0;}
+.progress-label{display:flex;justify-content:space-between;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.progress-track{height:2px;background:var(--border);border-radius:1px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:1px;transition:width .8s cubic-bezier(.16,1,.3,1);}
+.phase-markers{display:flex;margin-top:5px;font-size:8px;color:var(--muted);letter-spacing:.08em;}
+.phase-marker{flex:1;}
+.phase-marker:last-child{text-align:right;}
+.phase-marker:nth-child(2){text-align:center;}
+
+/* PHASE TABS */
+.phase-tabs{padding:18px 18px 0;display:flex;gap:7px;}
+.phase-tab{flex:1;padding:11px 7px;border-radius:10px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;text-align:center;transition:all .25s ease;position:relative;overflow:hidden;}
+.phase-tab::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .25s;}
+.phase-tab.p1::before{background:radial-gradient(ellipse at 50% 0%,var(--green-dim) 0%,transparent 70%);}
+.phase-tab.p2::before{background:radial-gradient(ellipse at 50% 0%,var(--blue-dim) 0%,transparent 70%);}
+.phase-tab.p3::before{background:radial-gradient(ellipse at 50% 0%,var(--rose-dim) 0%,transparent 70%);}
+.phase-tab.active::before{opacity:1;}
+.phase-tab.active.p1{border-color:var(--green);}
+.phase-tab.active.p2{border-color:var(--blue);}
+.phase-tab.active.p3{border-color:var(--rose);}
+.phase-tab-weeks{font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;position:relative;}
+.phase-tab-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--muted2);position:relative;transition:color .25s;}
+.phase-tab.active.p1 .phase-tab-name{color:var(--green2);}
+.phase-tab.active.p2 .phase-tab-name{color:var(--blue2);}
+.phase-tab.active.p3 .phase-tab-name{color:var(--rose2);}
+.phase-tab-sub{font-size:9px;color:var(--muted);margin-top:2px;position:relative;}
+
+/* PHASE DESC */
+.phase-desc{margin:14px 18px 0;padding:13px 15px;background:var(--bg2);border-radius:10px;border-left:2px solid var(--gold-dim);font-size:13px;color:var(--muted2);line-height:1.7;font-family:'Cormorant Garamond',serif;font-style:italic;}
+
+/* ── CALENDAR ── */
+.calendar-wrap{padding:18px 18px 0;}
+.calendar-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.calendar-month{margin-bottom:14px;}
+.cal-month-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--gold2);margin-bottom:8px;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cal-dow{font-size:8px;color:var(--muted);text-align:center;padding:3px 0;letter-spacing:.08em;}
+.cal-day{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:5px 3px;text-align:center;min-height:46px;cursor:pointer;transition:all .18s;position:relative;}
+.cal-day.empty{background:transparent;border-color:transparent;cursor:default;}
+.cal-day-num{font-size:11px;color:var(--muted2);margin-bottom:3px;}
+.cal-day-name{font-size:7px;color:var(--muted);line-height:1.2;letter-spacing:.03em;}
+.cal-day.rest-day{opacity:.5;}
+.cal-day.rest-day .cal-day-name{color:var(--muted);}
+.cal-day.workout-day{border-color:var(--border2);}
+.cal-day.workout-day .cal-day-num{color:var(--text);}
+.cal-day.done{background:#0d1f15;border-color:var(--green);}
+.cal-day.done .cal-day-num{color:var(--green2);}
+.cal-day.done::after{content:'✓';position:absolute;top:3px;right:4px;font-size:8px;color:var(--green);font-family:'DM Mono',monospace;}
+.cal-day.today-marker{border-color:var(--gold);}
+.cal-day.today-marker .cal-day-num{color:var(--gold2);}
+.cal-day.stretch-rest{border-color:var(--blue-dim);}
+.cal-day.stretch-rest.done{background:var(--blue-dim);border-color:var(--blue);}
+.cal-day.stretch-rest.done .cal-day-num{color:var(--blue2);}
+
+/* SECTION LABEL */
+.section-label{padding:20px 18px 10px;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+
+/* WORKOUT CARDS */
+.workout-list{padding:0 14px;display:flex;flex-direction:column;gap:8px;}
+.workout-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .2s;}
+.workout-card.open.p1{border-color:var(--green);}
+.workout-card.open.p2{border-color:var(--blue);}
+.workout-card.open.p3{border-color:var(--rose);}
+.workout-header{padding:17px 17px 13px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;-webkit-user-select:none;user-select:none;}
+.workout-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--text);transition:color .2s;}
+.workout-card.open.p1 .workout-title{color:var(--green2);}
+.workout-card.open.p2 .workout-title{color:var(--blue2);}
+.workout-card.open.p3 .workout-title{color:var(--rose2);}
+.workout-meta{font-size:11px;color:var(--muted);margin-top:5px;}
+.workout-tags{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;}
+.tag{font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:3px 7px;border-radius:4px;}
+.tag-neck{background:#1a1015;border:1px solid #4a2535;color:#b07090;}
+.tag-shoulder{background:var(--blue-dim);border:1px solid var(--blue);color:var(--blue2);}
+.tag-golf{background:var(--green-dim);border:1px solid var(--green);color:var(--green2);}
+.tag-lower{background:#1a1400;border:1px solid #4a3800;color:#c09040;}
+.chevron{font-size:18px;color:var(--muted);transition:transform .25s cubic-bezier(.16,1,.3,1),color .2s;margin-top:4px;flex-shrink:0;}
+.workout-card.open .chevron{transform:rotate(180deg);}
+.workout-card.open.p1 .chevron{color:var(--green);}
+.workout-card.open.p2 .chevron{color:var(--blue);}
+.workout-card.open.p3 .chevron{color:var(--rose);}
+
+/* CHECKBOX ON CARD */
+.card-checkbox-row{display:flex;align-items:center;gap:10px;padding:10px 17px;border-top:1px solid var(--border);background:var(--bg3);}
+.card-check-btn{display:flex;align-items:center;gap:8px;background:none;border:1px solid var(--border2);border-radius:8px;padding:8px 14px;cursor:pointer;color:var(--muted);font-size:12px;font-family:'DM Mono',monospace;transition:all .2s;flex:1;justify-content:center;}
+.card-check-btn.checked{background:var(--green-dim);border-color:var(--green);color:var(--green2);}
+.card-check-btn .chk-icon{font-size:16px;}
+
+/* WORKOUT BODY */
+.workout-body{display:none;}
+.workout-card.open .workout-body{display:block;}
+
+/* WARMUP / PRE-STRETCH BLOCK */
+.warmup-block{margin:0 14px 12px;padding:14px;background:#100e08;border:1px solid #2a2210;border-left:2px solid var(--gold-dim);border-radius:10px;}
+.prestretch-block{margin:0 14px 12px;padding:14px;background:#0a1220;border:1px solid #1a2840;border-left:2px solid var(--amber);border-radius:10px;}
+.block-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px;}
+.block-label.gold{color:var(--gold);}
+.block-label.amber{color:var(--amber2);}
+.block-label.blue{color:var(--blue2);}
+.block-label.green{color:var(--green2);}
+.block-label.rose{color:var(--rose2);}
+.warmup-line{font-size:13px;color:var(--muted2);line-height:1.9;}
+.warmup-line.dim{color:var(--muted);}
+.stretch-item{display:flex;gap:10px;padding:7px 0;border-top:1px solid rgba(255,255,255,.04);}
+.stretch-bullet{color:var(--amber);font-size:10px;margin-top:3px;flex-shrink:0;}
+.stretch-name{font-size:13px;color:var(--text);font-weight:500;font-family:'Cormorant Garamond',serif;}
+.stretch-dur{font-size:11px;color:var(--muted2);margin-top:2px;}
+
+/* EXERCISE CARDS (larger, with images) */
+.ex-section{margin:0 14px 12px;}
+.ex-section-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.ex-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;}
+.ex-card-header{padding:14px 14px 10px;display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer;-webkit-user-select:none;user-select:none;}
+.ex-card-left{flex:1;}
+.ex-num{font-size:10px;color:var(--muted);letter-spacing:.1em;margin-bottom:3px;}
+.ex-name-large{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--text);}
+.ex-stats-row{display:flex;gap:14px;margin-top:8px;}
+.ex-stat{text-align:center;}
+.ex-stat-val{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;line-height:1;}
+.p1 .ex-stat-val{color:var(--green2);}
+.p2 .ex-stat-val{color:var(--blue2);}
+.p3 .ex-stat-val{color:var(--rose2);}
+.ex-stat-lbl{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.ex-notes-large{font-size:13px;color:var(--muted2);font-style:italic;line-height:1.6;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+.ex-notes-large::before{content:'→ ';}
+.ex-expand-chevron{font-size:14px;color:var(--muted);transition:transform .2s;margin-left:8px;flex-shrink:0;}
+.ex-card.open .ex-expand-chevron{transform:rotate(180deg);}
+
+/* EXERCISE IMAGE PANEL */
+.ex-image-panel{display:none;padding:0 14px 14px;}
+.ex-card.open .ex-image-panel{display:block;}
+.ex-images-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.ex-img-wrap{border-radius:8px;overflow:hidden;background:#0a0c12;border:1px solid var(--border);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;position:relative;}
+.ex-img-wrap img{width:100%;height:100%;object-fit:cover;}
+.ex-img-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.7);font-size:9px;color:var(--muted2);padding:4px 6px;text-align:center;}
+.ex-img-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:6px;padding:12px;}
+.ex-img-icon{font-size:28px;opacity:.3;}
+.ex-img-link{font-size:10px;color:var(--blue2);text-align:center;line-height:1.4;}
+.ex-img-link a{color:var(--blue2);text-decoration:none;border-bottom:1px solid var(--blue-dim);}
+.ex-form-cues{background:#0a0e14;border-radius:8px;padding:10px 12px;}
+.ex-form-title{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.ex-form-cue{font-size:12px;color:var(--muted2);line-height:1.6;padding:4px 0;display:flex;gap:8px;}
+.ex-form-cue::before{content:'·';color:var(--gold);flex-shrink:0;}
+
+/* COMPLETE CHECKBOX per exercise */
+.ex-done-row{padding:8px 14px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.ex-done-btn{display:flex;align-items:center;gap:6px;background:none;border:1px solid var(--border2);border-radius:6px;padding:6px 12px;cursor:pointer;color:var(--muted);font-size:11px;font-family:'DM Mono',monospace;transition:all .18s;}
+.ex-done-btn.done{background:var(--green-dim);border-color:var(--green);color:var(--green2);}
+
+/* COOLDOWN */
+.cooldown-wrap{margin:0 14px 14px;}
+.cool-divider{border:none;border-top:1px solid var(--border);margin-bottom:12px;}
+.cool-section{border-radius:10px;overflow:hidden;margin-bottom:6px;border:1px solid var(--border);}
+.cool-header{padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;-webkit-user-select:none;user-select:none;}
+.cool-header-left{display:flex;align-items:center;gap:10px;}
+.cool-icon{font-size:16px;}
+.cool-title{font-size:13px;font-weight:500;font-family:'Cormorant Garamond',serif;}
+.cool-time{font-size:10px;color:var(--muted);margin-top:1px;}
+.cool-chevron{font-size:12px;color:var(--muted);transition:transform .2s;}
+.cool-section.open .cool-chevron{transform:rotate(180deg);}
+.cool-body{display:none;}
+.cool-section.open .cool-body{display:block;}
+.cool-item{padding:10px 14px;border-top:1px solid rgba(255,255,255,.03);display:flex;gap:10px;}
+.cool-dot{font-size:8px;color:var(--muted);margin-top:4px;flex-shrink:0;}
+.cool-item-name{font-size:13px;color:var(--muted2);font-weight:500;font-family:'Cormorant Garamond',serif;}
+.cool-duration{font-size:11px;color:var(--muted);margin-top:1px;}
+.cool-cue{font-size:11px;color:var(--muted);font-style:italic;line-height:1.5;margin-top:3px;}
+.cool-section.neck{border-color:#4a2535;background:#0e0810;}
+.cool-section.neck .cool-title{color:#c080a0;}
+.cool-section.neck .cool-time{color:#7a4560;}
+.cool-section.shoulder{border-color:var(--blue);background:var(--blue-dim);}
+.cool-section.shoulder .cool-title{color:var(--blue2);}
+.cool-section.shoulder .cool-time{color:var(--blue);}
+.cool-section.golf{border-color:var(--green);background:var(--green-dim);}
+.cool-section.golf .cool-title{color:var(--green2);}
+.cool-section.golf .cool-time{color:var(--green);}
+.cool-section.lower{border-color:#4a3800;background:#0f0c00;}
+.cool-section.lower .cool-title{color:#c09040;}
+.cool-section.lower .cool-time{color:#7a6030;}
+
+/* REST DAY STRETCH CARD */
+.rest-stretch-card{background:var(--bg2);border:1px solid var(--blue-dim);border-radius:14px;overflow:hidden;margin:0 14px 8px;}
+.rest-stretch-header{padding:17px 17px 13px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;}
+.rest-stretch-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--blue2);}
+.rest-stretch-meta{font-size:11px;color:var(--muted);margin-top:4px;}
+.rest-stretch-body{display:none;}
+.rest-stretch-card.open .rest-stretch-body{display:block;}
+.rest-stretch-card.open{border-color:var(--blue);}
+
+/* NOTES PAGE */
+.notes-wrap{padding:22px 18px 40px;}
+.notes-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;color:var(--text);margin-bottom:6px;}
+.notes-sub{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:22px;}
+.note-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;}
+.note-card-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--gold2);margin-bottom:8px;}
+.note-card-text{font-size:13px;color:var(--muted2);line-height:1.8;}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;padding-bottom:var(--safe-bottom);background:rgba(8,10,15,.96);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);border-top:1px solid var(--border);display:flex;z-index:100;}
+.nav-btn{flex:1;padding:12px 8px 10px;border:none;background:transparent;cursor:pointer;text-align:center;transition:opacity .15s;}
+.nav-btn:active{opacity:.6;}
+.nav-icon{font-size:20px;display:block;margin-bottom:3px;}
+.nav-label{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.nav-btn.active .nav-label{color:var(--gold);}
+.page{display:none;padding-bottom:100px;}
+.page.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.fade-up{animation:fadeUp .4s ease forwards;}
+
+/* RESET BUTTON */
+.reset-btn{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:11px;font-family:'DM Mono',monospace;padding:6px 12px;cursor:pointer;margin-top:12px;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <div class="header-title">Tim's Program</div>
+      <div class="header-sub">90 Days · Strength &amp; Golf Mobility</div>
+    </div>
+    <div class="day-badge" id="dayBadge">Day 1</div>
+  </div>
+</div>
+
+<div class="page active" id="page-program">
+  <div class="hero fade-up">
+    <div class="hero-name">Built for<br><em>Tim.</em></div>
+    <div class="hero-meta">
+      <div class="hero-stat"><div class="hero-stat-val">90</div><div class="hero-stat-lbl">Days</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">3</div><div class="hero-stat-lbl">Phases</div></div>
+      <div class="hero-stat"><div class="hero-stat-val" id="doneCount">0</div><div class="hero-stat-lbl">Done</div></div>
+      <div class="hero-stat"><div class="hero-stat-val">⛳</div><div class="hero-stat-lbl">Golf</div></div>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label"><span>Program Progress</span><span id="progressPct">0%</span></div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="phase-markers">
+      <span class="phase-marker">Reactivation</span>
+      <span class="phase-marker">Building</span>
+      <span class="phase-marker">Full Strength</span>
+    </div>
+  </div>
+
+  <div class="phase-tabs">
+    <div class="phase-tab p1 active" onclick="selectPhase(0)">
+      <div class="phase-tab-weeks">Wks 1–4</div>
+      <div class="phase-tab-name">Phase 1</div>
+      <div class="phase-tab-sub">Reactivation</div>
+    </div>
+    <div class="phase-tab p2" onclick="selectPhase(1)">
+      <div class="phase-tab-weeks">Wks 5–8</div>
+      <div class="phase-tab-name">Phase 2</div>
+      <div class="phase-tab-sub">Building</div>
+    </div>
+    <div class="phase-tab p3" onclick="selectPhase(2)">
+      <div class="phase-tab-weeks">Wks 9–13</div>
+      <div class="phase-tab-name">Phase 3</div>
+      <div class="phase-tab-sub">Full Strength</div>
+    </div>
+  </div>
+
+  <div class="phase-desc" id="phaseDesc"></div>
+
+  <!-- CALENDAR -->
+  <div class="calendar-wrap">
+    <div class="calendar-label">Monthly Calendar</div>
+    <div id="calendarContainer"></div>
+  </div>
+
+  <div class="section-label">Workouts</div>
+  <div class="workout-list" id="workoutList"></div>
+</div>
+
+<div class="page" id="page-notes">
+  <div class="notes-wrap">
+    <div class="notes-title">Program<br><em style="font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold)">Notes.</em></div>
+    <div class="notes-sub">Tim · New Orleans · 2025</div>
+    <div class="note-card"><div class="note-card-title">Progressive Overload</div><div class="note-card-text">Add 2–5 lbs when you hit the top of a rep range for 2 consecutive sessions with clean form. Never chase weight at the cost of technique. Muscle memory returns fast — trust the process.</div></div>
+    <div class="note-card"><div class="note-card-title">Flexibility Is the Program</div><div class="note-card-text">Every cooldown and pre-stretch section is mandatory. The neck, shoulder, and golf protocols are not supplemental — they are the second half of the workout. Skipping them is where returning athletes get hurt.</div></div>
+    <div class="note-card"><div class="note-card-title">The Golf Transfer</div><div class="note-card-text">Thoracic rotation, hip internal rotation, and lat length directly determine swing arc and clubhead speed. The flexibility work here will show up on the course faster than any other change you make.</div></div>
+    <div class="note-card"><div class="note-card-title">Reps in Reserve (RIR)</div><div class="note-card-text">Phase 1: stop 3–4 reps early. Phase 2: 2–3 early. Phase 3: 1–2 early on strength sets, closer to failure on hypertrophy. Your connective tissue needs time — RIR protects it.</div></div>
+    <div class="note-card"><div class="note-card-title">Neck — Every Day</div><div class="note-card-text">The chin tuck (cervical retraction) takes 2 minutes and should be done daily, including rest days. It resets forward head posture from sitting. Highest-return flexibility habit in the program.</div></div>
+    <div class="note-card"><div class="note-card-title">Sleep &amp; Nutrition</div><div class="note-card-text">0.7–1g protein per lb bodyweight. 8 hours sleep is the program — not a bonus. Muscle and connective tissue repair at rest. Don't aggressively cut calories while running this.</div></div>
+    <div class="note-card"><div class="note-card-title">Joint Pain vs. Soreness</div><div class="note-card-text">DOMS in weeks 1–2 is expected. Pain in a joint is different — rest and don't train through it. One missed session costs nothing. An injury costs weeks.</div></div>
+    <div style="text-align:center;padding-top:10px;">
+      <button class="reset-btn" onclick="confirmReset()">Reset Program Progress</button>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <button class="nav-btn active" id="nav-program" onclick="showPage('program')">
+    <span class="nav-icon">◈</span><span class="nav-label">Program</span>
+  </button>
+  <button class="nav-btn" id="nav-notes" onclick="showPage('notes')">
+    <span class="nav-icon">◇</span><span class="nav-label">Notes</span>
+  </button>
+</div>
+
+<script>
+// ─── EXERCISE IMAGE / FORM DATA ───────────────────────────────────────────────
+// Using Wikimedia Commons & open GIF sources for form reference images
+const EX_DATA = {
+  "Dumbbell Bench Press": {
+    images: [
+      { url:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Dumbbell_bench_press.jpg/320px-Dumbbell_bench_press.jpg", label:"Start position" },
+      { url:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Bench_press_2.jpg/320px-Bench_press_2.jpg", label:"Press position" }
+    ],
+    cues:["Feet flat on floor, arch in lower back","Grip: palms face feet, DBs at chest level","Lower with control — 3 count — feel chest stretch","Press up and slightly in — don't lock out hard","Shoulder blades pinched together throughout"]
+  },
+  "Dumbbell Row": {
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Dumbbell_row.jpg/320px-Dumbbell_row.jpg",label:"Start: arm extended"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Dumbbell_row_2.jpg/320px-Dumbbell_row_2.jpg",label:"Top: elbow high"}
+    ],
+    cues:["Plant non-working hand and knee on bench","Back flat — parallel to floor","Pull elbow back and UP past your torso","Feel the lat — not the bicep — doing the work","Full stretch at the bottom every rep"]
+  },
+  "Goblet Squat":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Squat_mechanics.jpg/240px-Squat_mechanics.jpg",label:"Descent"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Air_squat.jpg/240px-Air_squat.jpg",label:"Full depth"}
+    ],
+    cues:["Hold DB vertically at chest — elbows point down","Feet shoulder-width, toes slightly out","Chest UP — don't fold forward","Break parallel — aim for crease of hip below knee","Drive knees out over toes throughout"]
+  },
+  "Romanian Deadlift":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/RDL_start.jpg/240px-RDL_start.jpg",label:"Hinge back"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Deadlift2.jpg/240px-Deadlift2.jpg",label:"Hip drive up"}
+    ],
+    cues:["Soft bend in knees — this is a HINGE not a squat","Push hips back — feel hamstring tension","Bar/DBs stay close to legs throughout","Stop when back starts to round (usually mid-shin)","Drive hips forward to stand — squeeze glutes at top"]
+  },
+  "Dumbbell Overhead Press":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Overhead_press_2.jpg/240px-Overhead_press_2.jpg",label:"Start at shoulders"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Overhead_press.jpg/240px-Overhead_press.jpg",label:"Locked out overhead"}
+    ],
+    cues:["DBs at shoulder height, palms face forward","Core braced — don't hyperextend lower back","Press straight up — slight backward lean is ok","At top: ears between arms, full extension","Control the descent — don't drop it"]
+  },
+  "Lateral Raise":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Lateral_raise.jpg/240px-Lateral_raise.jpg",label:"Raise to parallel"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Lateral_raise_2.jpg/240px-Lateral_raise_2.jpg",label:"Top position"}
+    ],
+    cues:["Slight forward lean from hips — better delt contact","Lead with elbows — not wrists","Raise to shoulder height only — no higher","Pinky slightly higher than thumb at top","3-count slow negative every rep"]
+  },
+  "Dumbbell Curl":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Bicep_curl.jpg/240px-Bicep_curl.jpg",label:"Bottom: full extension"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Dumbbell_curl_top.jpg/240px-Dumbbell_curl_top.jpg",label:"Top: full supination"}
+    ],
+    cues:["Full extension at bottom — don't cheat the range","Supinate (rotate palm up) as you lift","Elbow stays fixed at side — no swinging","Squeeze hard at the top","Slow negative — 2–3 count back down"]
+  },
+  "Skull Crushers":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Skull_crusher.jpg/240px-Skull_crusher.jpg",label:"Bottom: stretch"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Tricep_extension.jpg/240px-Tricep_extension.jpg",label:"Top: lockout"}
+    ],
+    cues:["Lie on bench, DBs above chest","Lower DBs toward your forehead — elbows fixed","Feel the tricep stretch at the bottom","Press back up without moving elbows","Keep elbows pointing at the ceiling throughout"]
+  },
+  "Incline Dumbbell Press":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Dumbbell_bench_press.jpg/320px-Dumbbell_bench_press.jpg",label:"Incline setup"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Bench_press_2.jpg/320px-Bench_press_2.jpg",label:"Press up"}
+    ],
+    cues:["Bench at 30–45° — not too steep","DBs touch at top — keep tension on chest","Elbows at ~45° to body — not flared wide","Feel the upper chest doing the work","Lower slow — upper chest needs the stretch"]
+  },
+  "Push-Up":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Push-up_1.jpg/320px-Push-up_1.jpg",label:"Top position"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Push_up_2.jpg/320px-Push_up_2.jpg",label:"Bottom: chest to floor"}
+    ],
+    cues:["Hands just outside shoulder width","Body is a rigid plank — no sagging hips","Chest touches floor — full range","Elbows at 45° to body on descent","Full lockout at top — protract shoulders"]
+  },
+  "Plank":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Planking_exercise.jpg/320px-Planking_exercise.jpg",label:"Correct alignment"}
+    ],
+    cues:["Forearms on ground, elbows under shoulders","Body: straight line from head to heels","Squeeze: glutes, abs, quads all at once","Don't let hips sag or pike up","Breathe — don't hold your breath"]
+  },
+  "Dumbbell Deadlift":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Deadlift2.jpg/320px-Deadlift2.jpg",label:"Setup"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/RDL_start.jpg/320px-RDL_start.jpg",label:"Lockout"}
+    ],
+    cues:["DBs outside legs, hinge down to grab","Back flat — chest up, proud posture","Push FLOOR away — don't think 'pull up'","Hips and shoulders rise together","Full hip extension at top — don't hyperextend back"]
+  },
+  "Hip Thrust":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Glute_bridge.jpg/320px-Glute_bridge.jpg",label:"Bottom"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Hip_thrust_top.jpg/320px-Hip_thrust_top.jpg",label:"Top: full hip extension"}
+    ],
+    cues:["Upper back on bench edge, DB on hips","Feet flat, hip-width apart","Drive hips UP explosively — squeeze glutes hard","At top: body is flat from shoulders to knees","2-second hold at top, slow controlled descent"]
+  },
+  "Bulgarian Split Squat":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Split_squat.jpg/320px-Split_squat.jpg",label:"Setup"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Bulgarian_split_squat.jpg/320px-Bulgarian_split_squat.jpg",label:"Bottom position"}
+    ],
+    cues:["Rear foot on bench — top of foot down","Front foot far enough that shin is vertical","Torso upright — don't lean forward","Lower until rear knee nearly touches floor","Drive through front heel to stand"]
+  },
+  "Arnold Press":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Overhead_press_2.jpg/240px-Overhead_press_2.jpg",label:"Start: palms in"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Overhead_press.jpg/240px-Overhead_press.jpg",label:"Top: palms out"}
+    ],
+    cues:["Start: DBs at chin, palms facing YOU","As you press up, rotate palms OUT","At top: palms face forward, fully extended","Reverse the rotation on the way down","Full shoulder: hits front, side, and rear delt"]
+  },
+  "Reverse Fly":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Lateral_raise.jpg/240px-Lateral_raise.jpg",label:"Bent over setup"}
+    ],
+    cues:["Hinge forward 45° — chest nearly parallel","Arms hang straight down, soft elbow bend","Raise arms out to sides like wings","Lead with elbows — pinch shoulder blades","Feel the REAR delt — not the traps"]
+  },
+  "Hammer Curl":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Bicep_curl.jpg/240px-Bicep_curl.jpg",label:"Neutral grip curl"}
+    ],
+    cues:["Neutral grip — thumbs point up throughout","No rotation of wrist at all","Elbow stays fixed at side","Full extension at bottom each rep","Targets brachialis and brachioradialis"]
+  },
+  "Walking Lunge":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Split_squat.jpg/320px-Split_squat.jpg",label:"Step out"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Bulgarian_split_squat.jpg/320px-Bulgarian_split_squat.jpg",label:"Drop knee"}
+    ],
+    cues:["Long stride forward — not a small step","Front shin vertical — knee over toes","Rear knee lowers toward floor (hover, don't slam)","Torso stays tall throughout","Drive off front foot — step through"]
+  },
+  "Glute Bridge":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Glute_bridge.jpg/320px-Glute_bridge.jpg",label:"Flat bridge top"}
+    ],
+    cues:["Lie on back, knees bent, feet flat","Drive hips up by squeezing glutes — not lower back","2-second hold at top every rep","Lower slowly — don't just drop","For more challenge: place DB on hips"]
+  },
+  "Dead Bug":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Planking_exercise.jpg/320px-Planking_exercise.jpg",label:"Core engaged position"}
+    ],
+    cues:["Press lower back FLAT into floor — hold it there","Arms point to ceiling, knees bent 90°","Slowly lower opposite arm & leg","Return without letting back arch","This is harder than it looks — go slow"]
+  },
+  "Face Pull":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Lateral_raise.jpg/240px-Lateral_raise.jpg",label:"Pull to face"}
+    ],
+    cues:["Anchor band or towel at face height","Pull handles/towel to your face — not neck","Elbows flare OUT and HIGH at end","External rotation: thumbs point behind you","This is the single best shoulder health exercise"]
+  },
+  "Calf Raise":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Air_squat.jpg/240px-Air_squat.jpg",label:"Full stretch to tip-toe"}
+    ],
+    cues:["Full stretch at bottom — heel below platform","Rise to tip-toe — 2s hold","Don't bounce — control both directions","Single leg: hold bench for balance","Toes straight for gastroc, slightly out for soleus"]
+  },
+  "Overhead Tricep Extension":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Skull_crusher.jpg/240px-Skull_crusher.jpg",label:"Overhead start"}
+    ],
+    cues:["Both hands grip one DB end overhead","Elbows point straight up at ceiling","Lower behind head — feel the long head stretch","Don't let elbows flare out wide","Press up to straight — don't lock aggressively"]
+  },
+  "Seal Row":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Dumbbell_row.jpg/320px-Dumbbell_row.jpg",label:"Prone on bench"}
+    ],
+    cues:["Lie prone (face down) on bench","Chest supported — no lower back involvement","Row both DBs up simultaneously","Elbows stay narrow — squeeze shoulder blades","Full hang at bottom for lat stretch"]
+  },
+  "Leg Curl":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Glute_bridge.jpg/320px-Glute_bridge.jpg",label:"Prone curl"}
+    ],
+    cues:["Lie face down on mat","Hold DB between feet (or use ankle)","Curl heels toward glutes","Keep hips pressed into floor","Full extension between each rep"]
+  },
+  "Sumo Squat":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Squat_mechanics.jpg/240px-Squat_mechanics.jpg",label:"Wide stance"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Air_squat.jpg/240px-Air_squat.jpg",label:"Deep position"}
+    ],
+    cues:["Feet 1.5–2× shoulder width, toes out ~45°","Hold DB vertically between legs","Knees track out over toes throughout","Target: inner thigh and glutes","Lower slow — feel the inner thigh stretch"]
+  },
+  "Single-Leg RDL":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/RDL_start.jpg/320px-RDL_start.jpg",label:"Hinge on one leg"}
+    ],
+    cues:["Stand on one leg — soft bend in knee","Hinge forward — free leg goes back as counterweight","Back stays flat — chest stays proud","Feel the hamstring of standing leg stretch","Touch DBs to floor or shin — return slowly"]
+  },
+  "Bird Dog":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Planking_exercise.jpg/320px-Planking_exercise.jpg",label:"All-fours neutral spine"}
+    ],
+    cues:["Tabletop position — wrists under shoulders","Extend opposite arm and leg simultaneously","No rotation — hip stays level","Move SLOW — feel the core working","Hold 2s extended, return with control"]
+  },
+  "Side Plank":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Planking_exercise.jpg/320px-Planking_exercise.jpg",label:"Side plank hold"}
+    ],
+    cues:["Elbow under shoulder, feet stacked","Lift hip — body is a straight diagonal line","Don't let hip sag toward floor","Engage oblique by pulling hip up","Stack or stagger feet for stability"]
+  },
+  "Hip Thrust (on bench)":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Glute_bridge.jpg/320px-Glute_bridge.jpg",label:"Setup on bench"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Hip_thrust_top.jpg/320px-Hip_thrust_top.jpg",label:"Top position"}
+    ],
+    cues:["Upper back rests on bench edge","DB sits on hips — hold steady with hands","Feet flat, drive through heels","Full hip extension at top — squeeze hard","2s hold, then lower with control"]
+  },
+  "Close-Grip DB Press":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Dumbbell_bench_press.jpg/320px-Dumbbell_bench_press.jpg",label:"Palms facing each other"}
+    ],
+    cues:["DBs touching each other, palms face each other","Elbows stay close to ribs — not flared","This is a TRICEP press — feel them working","Squeeze DBs together throughout the set","Full extension at top"]
+  },
+  "Incline Dumbbell Curl":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Bicep_curl.jpg/240px-Bicep_curl.jpg",label:"Full bottom stretch"}
+    ],
+    cues:["Sit on incline bench — arms hang fully extended","This stretches the long head of bicep","Curl up — supinate as you go","Don't swing — the incline removes cheating","Best bicep exercise for long head development"]
+  },
+  "Meadows Row":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Dumbbell_row.jpg/320px-Dumbbell_row.jpg",label:"Angled row position"}
+    ],
+    cues:["Stand perpendicular to bench — front foot on plate or elevated","Lean toward bench — grasp DB in outside hand","Row up and back — elbow goes past hip","Greater range of motion than standard row","Can handle heavy weight — great for lats"]
+  },
+  "RDL into Row":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/RDL_start.jpg/320px-RDL_start.jpg",label:"Hinge position for row"}
+    ],
+    cues:["Hinge into RDL position — back flat, hips back","From that position: row both DBs to hips","Hold the hinge throughout the row","Lower DBs, then return to standing","Full posterior chain engagement in one movement"]
+  },
+  "Reverse Lunge":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Split_squat.jpg/320px-Split_squat.jpg",label:"Step back"},
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Bulgarian_split_squat.jpg/320px-Bulgarian_split_squat.jpg",label:"Knee hover"}
+    ],
+    cues:["Step BACK — not forward","Knee hovers just above floor","Front shin stays vertical","Torso stays tall throughout","More glute focus than forward lunge"]
+  },
+  "Step-Up":{
+    images:[
+      {url:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Air_squat.jpg/240px-Air_squat.jpg",label:"Drive up through heel"}
+    ],
+    cues:["Place full foot on bench — not just toes","Drive through the HEEL of the elevated foot","Don't push off the floor foot","Squeeze glute at top — full hip extension","Step down controlled — don't just drop"]
+  },
+};
+
+// ─── COOLDOWN DATA ────────────────────────────────────────────────────────────
+const NECK=[
+  {name:"Chin Tuck (Cervical Retraction)",duration:"10 reps, 5s hold",cue:"Draw chin straight back — not down. Resets forward head posture. Do this every single day."},
+  {name:"Neck Side Tilt",duration:"60s each side",cue:"Ear toward shoulder. No shoulder shrug. Gentle overpressure with opposite hand."},
+  {name:"Neck Rotation",duration:"45s each side",cue:"Turn to look over shoulder — chin stays level. Don't force the end range."},
+  {name:"Neck Flexion / Extension",duration:"30s each",cue:"Chin to chest, then slowly chin up. Slow and deliberate."},
+  {name:"Upper Trap Fingertip Release",duration:"60s each side",cue:"Fingers on top of trap, tilt head away. Press gently — breathe into the tightness."},
+  {name:"Levator Scapulae Stretch",duration:"60s each side",cue:"Chin toward armpit, hand on back of head. Chronically tight in everyone who sits."},
+];
+const SHOULDER=[
+  {name:"Thread the Needle",duration:"90s each side",cue:"All fours, thread one arm under body and rotate. Thoracic rotation + posterior shoulder."},
+  {name:"Cross-Body Shoulder Stretch",duration:"60s each side",cue:"Pull arm across chest. Keep shoulder DOWN — don't let it creep up."},
+  {name:"Overhead Tricep / Lat Stretch",duration:"60s each side",cue:"Arm overhead, bend elbow, opposite hand pulls. Lats limit shoulder flexion more than people think."},
+  {name:"Sleeper Stretch",duration:"60s each side",cue:"Lie on side, arm 90°, push forearm toward floor. Posterior capsule — key for internal rotation."},
+  {name:"Doorway Pec Stretch (3 positions)",duration:"45s each position",cue:"Arm high, 90°, and low. Each position hits a different part of the pec and anterior delt."},
+  {name:"Wall Angels (slow)",duration:"10 reps",cue:"Back flat to wall, arms slide up and down. Where contact breaks — that's your mobility deficit."},
+  {name:"Prone Cobra",duration:"60s",cue:"Face down, thumbs up, lift chest and pinch shoulder blades. Counteracts forward flexion of daily life."},
+  {name:"Child's Pose with Lat Reach",duration:"90s alternating sides",cue:"Walk hands to one side. Deep lat and QL stretch — impacts shoulder elevation and swing arc."},
+];
+const GOLF=[
+  {name:"Thoracic Rotation (seated cross-legged)",duration:"60s each side",cue:"Golf swing lives here. Sit tall, hands behind head, rotate as far as breath allows."},
+  {name:"Doorway / Bench Chest Opener",duration:"90s",cue:"Arms at 90°, lean in. Opens pec minor — critical for full shoulder turn at address."},
+  {name:"Behind-Shoulder Dowel Stretch",duration:"60s each side",cue:"Towel or bar behind back. Rotator cuff and posterior capsule — both sides."},
+  {name:"Seated Spinal Rotation (arms crossed)",duration:"90s each side",cue:"Bench edge, arms crossed, rotate fully. Mirror your backswing and follow-through."},
+  {name:"Hip Flexor Lunge + Rotation",duration:"60s each side",cue:"Low lunge, add thoracic rotation toward front leg. Tight hip flexors restrict hip turn."},
+  {name:"Lateral Flexion (standing side bend)",duration:"45s each side",cue:"Arm overhead, lean away. Stretches QL and lat — both fire hard in the downswing."},
+  {name:"Wrist Flexor & Extensor Stretch",duration:"30s each direction per hand",cue:"Palm up then palm down. Grip and wrist hinge are underrated in golf."},
+  {name:"Figure-4 Glute Stretch",duration:"90s each side",cue:"External hip rotation is everything in the follow-through. Don't rush this."},
+];
+const LOWER_FLEX={
+  "Lower Body A":[
+    {name:"Pigeon Stretch",duration:"90s each side",cue:""},
+    {name:"Hamstring Floor Stretch",duration:"60s each side",cue:""},
+    {name:"Hip Flexor Lunge Stretch",duration:"60s each side",cue:""},
+    {name:"Cossack Squat Hold",duration:"45s each side",cue:""},
+  ],
+  "Lower Body B":[
+    {name:"Pigeon Stretch",duration:"90s each side",cue:""},
+    {name:"90/90 Hip Stretch",duration:"90s each side",cue:""},
+    {name:"Quad Standing Stretch",duration:"45s each side",cue:""},
+    {name:"Seated Hamstring Stretch",duration:"60s each side",cue:""},
+  ],
+  "Heavy Lower":[
+    {name:"Pigeon Stretch",duration:"2 min each side",cue:""},
+    {name:"Hip Flexor Couch Stretch",duration:"90s each side",cue:""},
+    {name:"Hamstring Towel Stretch",duration:"60s each side",cue:""},
+    {name:"90/90 Hip Capsule",duration:"90s each side",cue:""},
+  ],
+  "Hypertrophy Lower":[
+    {name:"Pigeon",duration:"90s each side",cue:""},
+    {name:"Figure-4 Glute Stretch",duration:"90s each side",cue:""},
+    {name:"Cossack Hold",duration:"60s each side",cue:""},
+    {name:"Hamstring + Hip Flexor Combo",duration:"60s each side",cue:""},
+  ],
+};
+
+// Pre-workout stretches tailored per muscle group
+const PRE_STRETCH={
+  "Upper Body A":[
+    {name:"Doorway Chest Stretch",duration:"45s each side",cue:"Open chest and pec minor before pressing"},
+    {name:"Cross-Body Shoulder",duration:"30s each side",cue:"Rear delt and posterior capsule warmup"},
+    {name:"Overhead Lat Stretch",duration:"30s each side",cue:"Lats and serratus before pressing and rows"},
+    {name:"Wrist Circles",duration:"20s each direction",cue:"Wrist prep for all pressing and curling"},
+    {name:"Thoracic Rotation (seated)",duration:"30s each side",cue:"Spine mobility before upper body loading"},
+  ],
+  "Lower Body A":[
+    {name:"Hip Flexor Lunge Stretch",duration:"45s each side",cue:"Unlock hip flexors before squatting"},
+    {name:"Adductor Squat Hold",duration:"45s",cue:"Inner thigh prep — hold deep sumo position"},
+    {name:"Ankle Circles",duration:"20s each direction",cue:"Ankle mobility for squat depth"},
+    {name:"Glute Activation — Clamshells",duration:"15 reps each side",cue:"Wake up glutes before lower body work"},
+    {name:"Hamstring Fold (standing)",duration:"30s each side",cue:"Loosen hamstrings before RDLs"},
+  ],
+  "Full Body / Core":[
+    {name:"Cat-Cow",duration:"10 slow reps",cue:"Spine articulation warmup"},
+    {name:"Hip 90/90 Transition",duration:"30s each side",cue:"Hip mobility for deadlifts and core work"},
+    {name:"Thoracic Rotation Kneeling",duration:"30s each side",cue:"Spine before rotation-based exercises"},
+    {name:"Shoulder Rolls + Arm Circles",duration:"30s",cue:"Upper body prep for rows and pressing"},
+    {name:"Standing Side Bend",duration:"20s each side",cue:"Lateral chain warmup for core work"},
+  ],
+  "Push":[
+    {name:"Doorway Chest Stretch",duration:"45s each side",cue:"Chest and pec minor before heavy pressing"},
+    {name:"Overhead Lat Reach",duration:"30s each side",cue:"Lats pull shoulders back — stretch them first"},
+    {name:"Band / Towel Pull-Apart",duration:"15 reps",cue:"External rotators prep for pressing health"},
+    {name:"Wrist Flexor Stretch",duration:"30s each side",cue:"Essential before any pressing movement"},
+    {name:"Thoracic Extension (over bench edge)",duration:"60s",cue:"Open up thoracic spine before overhead pressing"},
+  ],
+  "Pull":[
+    {name:"Child's Pose with Lat Reach",duration:"45s each side",cue:"Full lat lengthening before row work"},
+    {name:"Thread the Needle",duration:"30s each side",cue:"Thoracic rotation prep for rowing mechanics"},
+    {name:"Bicep Wall Stretch",duration:"30s each side",cue:"Bicep tendon prep before heavy curling"},
+    {name:"Scapular Wall Slides",duration:"10 slow reps",cue:"Activate lower traps before pulling"},
+    {name:"Chin-to-Chest Neck Stretch",duration:"30s",cue:"Cervical spine before pulling loads overhead"},
+  ],
+  "Lower Body B":[
+    {name:"Hip Flexor Lunge",duration:"45s each side",cue:"Must-do before squatting and lunging"},
+    {name:"Cossack Squat Hold",duration:"30s each side",cue:"Adductor and hip prep"},
+    {name:"Glute Activation — Single-Leg Bridge",duration:"10 reps each side",cue:"Fire glutes before hip thrusts and RDLs"},
+    {name:"Ankle Circles + Dorsiflexion Stretch",duration:"20s each",cue:"Ankle mobility for squat mechanics"},
+    {name:"Standing Hamstring Fold",duration:"30s each side",cue:"Pre-stretch hamstrings before RDLs"},
+  ],
+  "Upper Body B":[
+    {name:"Sleeper Stretch",duration:"30s each side",cue:"Posterior capsule — key for shoulder longevity"},
+    {name:"Overhead Tricep Stretch",duration:"30s each side",cue:"Tricep prep before pressing and extensions"},
+    {name:"Cross-Body Shoulder",duration:"30s each side",cue:"Rear delt warmup"},
+    {name:"Doorway Chest Opener",duration:"45s",cue:"Pec prep for bench and Arnold press"},
+    {name:"Neck Side Tilt",duration:"20s each side",cue:"Cervical spine before loading"},
+  ],
+  "Active Recovery":[
+    {name:"Full Body Cat-Cow",duration:"2 min",cue:"Start here every time — spine first"},
+    {name:"Supine Knee-to-Chest",duration:"45s each side",cue:"Lower back decompression"},
+    {name:"Happy Baby Pose",duration:"60s",cue:"Full hip opening to start the session"},
+    {name:"Neck Rolls (slow)",duration:"5 each direction",cue:"Gentle cervical mobility"},
+    {name:"Wrist and Ankle Circles",duration:"30s each",cue:"Peripheral joint warmup"},
+  ],
+  "Heavy Push":[
+    {name:"Doorway Chest Stretch (all 3 angles)",duration:"30s each position",cue:"Full pec complex before heavy bench"},
+    {name:"Overhead Lat Reach",duration:"30s each side",cue:"Lats affect pressing mechanics"},
+    {name:"External Rotation with Light DB",duration:"15 reps each side",cue:"Rotator cuff must be warm before heavy pressing"},
+    {name:"Thoracic Extension over Bench",duration:"60s",cue:"Mandatory before standing overhead press"},
+    {name:"Wrist Flexor + Extensor Stretch",duration:"30s each direction",cue:"Wrist prep for max loads"},
+  ],
+  "Heavy Pull":[
+    {name:"Thread the Needle",duration:"45s each side",cue:"Thoracic rotation before heavy rows"},
+    {name:"Child's Pose Lat Reach",duration:"45s each side",cue:"Full lat stretch before pulling"},
+    {name:"Scapular Wall Slides",duration:"12 reps slow",cue:"Lower trap activation before heavy rows"},
+    {name:"Bicep Wall Stretch",duration:"30s each side",cue:"Bicep tendon health before heavy curls"},
+    {name:"Levator Scapulae Stretch",duration:"30s each side",cue:"Neck-shoulder junction before pulling loads"},
+  ],
+  "Heavy Lower":[
+    {name:"Hip Flexor Lunge + Rotation",duration:"60s each side",cue:"Most important stretch before heavy lower body"},
+    {name:"Cossack Squat Hold",duration:"45s each side",cue:"Adductor and hip prep for split squats"},
+    {name:"Single-Leg Glute Bridge",duration:"12 reps each side",cue:"Glute activation before deadlifts and squats"},
+    {name:"Thoracic Rotation (seated)",duration:"30s each side",cue:"Spine prep before heavy bilateral loading"},
+    {name:"Ankle Dorsiflexion Stretch",duration:"45s each side",cue:"Ankle mobility before heavy squatting"},
+  ],
+  "Hypertrophy Upper":[
+    {name:"Doorway Chest Stretch",duration:"45s",cue:"Pec stretch before bench volume"},
+    {name:"Overhead Lat Reach",duration:"30s each side",cue:"Lat prep for rows"},
+    {name:"Sleeper Stretch",duration:"30s each side",cue:"Posterior capsule health"},
+    {name:"Bicep Wall Stretch",duration:"30s each side",cue:"Before curl volume"},
+    {name:"Thoracic Rotation",duration:"30s each side",cue:"Spine mobility maintenance"},
+  ],
+  "Hypertrophy Lower":[
+    {name:"Hip Flexor Lunge",duration:"45s each side",cue:"Open hip flexors before squat volume"},
+    {name:"Adductor Stretch (sumo hold)",duration:"45s",cue:"Inner thigh prep for sumo squats"},
+    {name:"Glute Activation",duration:"12 reps each side",cue:"Fire glutes before lunge and bridge work"},
+    {name:"Hamstring Fold",duration:"30s each side",cue:"Hamstring prep before leg curl"},
+    {name:"Ankle Circles",duration:"20s each",cue:"Ankle mobility before squat volume"},
+  ],
+};
+
+// REST DAY STRETCH ROUTINE
+const REST_STRETCH=[
+  {name:"Chin Tuck (Cervical Retraction)",duration:"10 reps, 5s hold",cue:"Daily non-negotiable. Resets forward head posture from sitting."},
+  {name:"Neck Side Tilt",duration:"60s each side",cue:""},
+  {name:"Levator Scapulae Stretch",duration:"60s each side",cue:"Chin toward armpit — one of the tightest muscles in desk workers."},
+  {name:"Thoracic Rotation (seated)",duration:"60s each side",cue:"Maintain the rotation you're building. Golf swing depends on it."},
+  {name:"Thread the Needle",duration:"60s each side",cue:"Posterior shoulder and thoracic spine combined."},
+  {name:"Child's Pose with Lat Reach",duration:"60s each side",cue:"Lats connect shoulder to hip — keep them long."},
+  {name:"Hip Flexor Lunge Stretch",duration:"60s each side",cue:"Hip flexors shorten from sitting — stretch them every rest day."},
+  {name:"Figure-4 Glute Stretch",duration:"90s each side",cue:"External hip rotation for the golf follow-through."},
+  {name:"Prone Cobra",duration:"60s",cue:"Undo all the forward flexion from your day."},
+  {name:"Box Breathing",duration:"5 min",cue:"4 in · 4 hold · 4 out · 4 hold. Recovery is active."},
+];
+
+// ─── PHASE DATA ───────────────────────────────────────────────────────────────
+const PHASES=[
+  {
+    name:"Phase 1",subtitle:"Reactivation",weeks:"Weeks 1–4",cls:"p1",
+    startWeek:1,endWeek:4,
+    desc:"Rebuild your foundation. Light loads, high reps, full ROM. Every set ends well before failure — joints and connective tissue wake up first. Every cooldown is as important as the lifting.",
+    schedule:["Upper Body A","Rest","Lower Body A","Rest","Full Body / Core","Rest","Rest"],
+    days:{
+      "Upper Body A":{
+        warmup:["5 min total:","· Arm circles × 10 forward, 10 back","· Towel pull-aparts × 15","· Light dumbbell halos × 10 each direction","· Shoulder rolls × 10"],
+        exercises:[
+          {name:"Dumbbell Bench Press",sets:"3",reps:"12–15",rest:"60s",notes:"Slow 3-count descent, pause at chest"},
+          {name:"Dumbbell Row",sets:"3",reps:"12–15",rest:"60s",notes:"Full stretch at bottom — elbow drives back"},
+          {name:"Dumbbell Overhead Press",sets:"3",reps:"10–12",rest:"60s",notes:"Elbows slightly forward, no flare"},
+          {name:"Lateral Raise",sets:"3",reps:"15",rest:"45s",notes:"Light — feel delt not trap"},
+          {name:"Dumbbell Curl",sets:"3",reps:"12–15",rest:"45s",notes:"Full extension, supinate at top"},
+          {name:"Skull Crushers",sets:"3",reps:"12–15",rest:"45s",notes:"Slow — elbows stay fixed"},
+        ],
+        cooldown:{neck:true,shoulder:true,golf:true,lower:false}
+      },
+      "Lower Body A":{
+        warmup:["5 min total:","· Hip circles × 10 each direction","· Bodyweight squats × 15","· Leg swings front/back × 10 each","· Leg swings side-to-side × 10 each"],
+        exercises:[
+          {name:"Goblet Squat",sets:"3",reps:"12–15",rest:"60s",notes:"Chest up, full depth, knees track toes"},
+          {name:"Romanian Deadlift",sets:"3",reps:"12",rest:"60s",notes:"Hinge — hamstring stretch not lower back"},
+          {name:"Reverse Lunge",sets:"3",reps:"10 each leg",rest:"60s",notes:"Knee hovers floor — controlled"},
+          {name:"Step-Up",sets:"3",reps:"10 each leg",rest:"60s",notes:"Drive through heel on bench"},
+          {name:"Calf Raise",sets:"3",reps:"20",rest:"30s",notes:"Full stretch at bottom, 2s pause at top"},
+          {name:"Glute Bridge",sets:"3",reps:"15",rest:"45s",notes:"2s squeeze at top every rep"},
+        ],
+        cooldown:{neck:false,shoulder:false,golf:true,lower:true}
+      },
+      "Full Body / Core":{
+        warmup:["5 min total:","· World's greatest stretch × 4 each side","· Cat-cow × 10","· Inchworm × 5","· Thoracic rotation kneeling × 8 each side"],
+        exercises:[
+          {name:"Dumbbell Deadlift",sets:"3",reps:"10",rest:"60s",notes:"Hinge — shoulders stay over weight"},
+          {name:"Push-Up",sets:"3",reps:"Max (controlled)",rest:"60s",notes:"Chest to floor, full lockout"},
+          {name:"Dumbbell Row",sets:"3",reps:"10",rest:"60s",notes:"Hinge position — feel the lats"},
+          {name:"Plank",sets:"3",reps:"30–45s",rest:"45s",notes:"Straight line — no hips up or sagging"},
+          {name:"Dead Bug",sets:"3",reps:"8 each side",rest:"45s",notes:"Press lower back INTO floor"},
+          {name:"Side Plank",sets:"2",reps:"20–30s each",rest:"30s",notes:"Rigid — don't let hips drop"},
+          {name:"Bird Dog",sets:"2",reps:"10 each side",rest:"30s",notes:"Slow and deliberate — no rotation"},
+        ],
+        cooldown:{neck:true,shoulder:true,golf:true,lower:false}
+      }
+    }
+  },
+  {
+    name:"Phase 2",subtitle:"Building",weeks:"Weeks 5–8",cls:"p2",
+    startWeek:5,endWeek:8,
+    desc:"Progressive overload begins. Heavier weight, lower reps, 4-day split. Shoulders and thoracic spine are the engine of the golf swing — they get priority in flexibility sessions.",
+    schedule:["Push","Pull","Rest","Lower Body B","Upper Body B","Rest","Active Recovery"],
+    days:{
+      "Push":{
+        warmup:["5 min total:","· Wall angels × 10 slow","· Band pull-aparts × 15","· Light overhead press warmup × 2 sets","· 10 push-ups (controlled)"],
+        exercises:[
+          {name:"Dumbbell Bench Press",sets:"4",reps:"8–10",rest:"90s",notes:"Add weight from Phase 1 — 2–3 RIR"},
+          {name:"Incline Dumbbell Press",sets:"3",reps:"10",rest:"75s",notes:"30–45° bench — upper chest focus"},
+          {name:"Dumbbell Overhead Press",sets:"3",reps:"8–10",rest:"75s",notes:"Seated for stability"},
+          {name:"Lateral Raise",sets:"3",reps:"15",rest:"45s",notes:"3-count slow negative"},
+          {name:"Skull Crushers",sets:"3",reps:"10–12",rest:"60s",notes:"Full stretch at bottom"},
+          {name:"Overhead Tricep Extension",sets:"3",reps:"12",rest:"45s",notes:"Long head stretch — both hands one DB"},
+        ],
+        cooldown:{neck:true,shoulder:true,golf:true,lower:false}
+      },
+      "Pull":{
+        warmup:["5 min total:","· Arm circles × 10 each direction","· Scapular wall slides × 10","· Face pulls (band/towel) × 15","· Thread the needle × 5 each side"],
+        exercises:[
+          {name:"Dumbbell Row",sets:"4",reps:"8–10",rest:"75s",notes:"Drive elbow up and back — lats not arm"},
+          {name:"Seal Row",sets:"3",reps:"10",rest:"75s",notes:"Elbows narrow — full scapular retraction"},
+          {name:"Reverse Fly",sets:"3",reps:"15",rest:"45s",notes:"Bent 45° — rear delts, slow and deliberate"},
+          {name:"Hammer Curl",sets:"3",reps:"10–12",rest:"60s",notes:"Neutral grip — brachialis focus"},
+          {name:"Dumbbell Curl",sets:"3",reps:"10–12",rest:"60s",notes:"Full supination at top"},
+          {name:"Face Pull",sets:"3",reps:"15",rest:"45s",notes:"Pull to face — external rotation at end"},
+        ],
+        cooldown:{neck:true,shoulder:true,golf:true,lower:false}
+      },
+      "Lower Body B":{
+        warmup:["5 min total:","· Hip circles × 10 each","· Cossack squats × 8 each side","· RDL warmup × 10 light","· Lateral walk × 15 each direction"],
+        exercises:[
+          {name:"Goblet Squat",sets:"4",reps:"10",rest:"90s",notes:"Add weight + paused bottom (2s)"},
+          {name:"Romanian Deadlift",sets:"4",reps:"8–10",rest:"90s",notes:"Push floor away — don't just stand up"},
+          {name:"Walking Lunge",sets:"3",reps:"10 each leg",rest:"75s",notes:"Long stride, torso upright"},
+          {name:"Sumo Squat",sets:"3",reps:"12",rest:"60s",notes:"Wide stance, toes out — inner thigh + glute"},
+          {name:"Calf Raise",sets:"4",reps:"15–20",rest:"45s",notes:"Single leg if possible — full range"},
+          {name:"Hip Thrust (on bench)",sets:"3",reps:"12",rest:"60s",notes:"Explosive up, controlled down"},
+        ],
+        cooldown:{neck:false,shoulder:false,golf:true,lower:true}
+      },
+      "Upper Body B":{
+        warmup:["5 min total:","· Full arm mobility circuit","· 10 push-ups","· 10 light rows","· Prone cobra × 5 (hold 5s each)"],
+        exercises:[
+          {name:"Dumbbell Bench Press",sets:"3",reps:"10",rest:"75s",notes:"Volume day — moderate weight, pump focus"},
+          {name:"Dumbbell Row",sets:"3",reps:"10",rest:"75s",notes:"Hinge position — chest supported optional"},
+          {name:"Arnold Press",sets:"3",reps:"10",rest:"75s",notes:"Rotate palms-in to palms-out overhead"},
+          {name:"Incline Dumbbell Curl",sets:"3",reps:"12",rest:"60s",notes:"Seated recline — long head stretch"},
+          {name:"Overhead Tricep Extension",sets:"3",reps:"12–15",rest:"45s",notes:"Full overhead stretch every rep"},
+          {name:"Face Pull",sets:"3",reps:"15",rest:"45s",notes:"Pull to face — external rotation at end"},
+        ],
+        cooldown:{neck:true,shoulder:true,golf:true,lower:false}
+      },
+      "Active Recovery":{
+        warmup:["Full session. No lifting. All movement and breath."],
+        exercises:[
+          {name:"World's Greatest Stretch",sets:"1",reps:"5 each side",rest:"—",notes:"Hip flexor + thoracic rotation"},
+          {name:"Cat-Cow → Child's Pose → Down Dog",sets:"1",reps:"10 min continuous",rest:"—",notes:"Breathe into each position"},
+          {name:"Hip 90/90",sets:"1",reps:"2 min each side",rest:"—",notes:"Internal and external hip rotation"},
+          {name:"Thoracic Rotation (seated)",sets:"1",reps:"12 each side",rest:"—",notes:"Rotate as far as breath allows"},
+          {name:"Foam Roll",sets:"1",reps:"10–15 min",rest:"—",notes:"Lats and thoracic spine are priority"},
+          {name:"Box Breathing",sets:"1",reps:"5 min",rest:"—",notes:"4 in · 4 hold · 4 out · 4 hold"},
+        ],
+        cooldown:{neck:true,shoulder:true,golf:true,lower:false}
+      }
+    }
+  },
+  {
+    name:"Phase 3",subtitle:"Full Strength",weeks:"Weeks 9–13",cls:"p3",
+    startWeek:9,endWeek:13,
+    desc:"Heavy compounds, full pliability integrated. Strength and flexibility train together now. By week 13: full-range mobility alongside genuine strength across the board.",
+    schedule:["Heavy Push","Heavy Pull","Rest","Heavy Lower","Hypertrophy Upper","Hypertrophy Lower","Active Recovery"],
+    days:{
+      "Heavy Push":{
+        warmup:["8 min total:","· External rotation warmup (light DB) × 15","· 2 warmup sets bench (very light)","· Wall angels × 10 slow","· 10 push-ups · Prone cobra × 5"],
+        exercises:[
+          {name:"Dumbbell Bench Press",sets:"5",reps:"5–6",rest:"2 min",notes:"Heaviest sustainable — max 1 RIR"},
+          {name:"Incline Dumbbell Press",sets:"4",reps:"8",rest:"90s",notes:"Upper chest priority"},
+          {name:"Dumbbell Overhead Press",sets:"4",reps:"6–8",rest:"90s",notes:"Standing — core braced hard"},
+          {name:"Lateral Raise",sets:"4",reps:"12",rest:"45s",notes:"Slight forward lean — better delt contact"},
+          {name:"Close-Grip DB Press",sets:"3",reps:"10",rest:"60s",notes:"Palms facing each other"},
+          {name:"Overhead Tricep Extension",sets:"3",reps:"12–15",rest:"45s",notes:"Full overhead stretch every rep"},
+        ],
+        cooldown:{neck:true,shoulder:true,golf:true,lower:false}
+      },
+      "Heavy Pull":{
+        warmup:["8 min total:","· Face pulls × 15","· Scapular retractions × 10","· Light RDL × 10","· Thread the needle × 6 each side","· Band pull-aparts × 15"],
+        exercises:[
+          {name:"Dumbbell Row",sets:"5",reps:"5–6 each side",rest:"90s/side",notes:"Heaviest with full ROM"},
+          {name:"Meadows Row",sets:"3",reps:"8 each side",rest:"75s",notes:"Heavier unilateral variant"},
+          {name:"RDL into Row",sets:"3",reps:"8",rest:"75s",notes:"Hinge + row at bottom — full posterior chain"},
+          {name:"Reverse Fly",sets:"3",reps:"15",rest:"45s",notes:"Rear delt — controlled and slow"},
+          {name:"Incline Dumbbell Curl",sets:"4",reps:"8–10",rest:"60s",notes:"Full stretch — go heavy"},
+          {name:"Hammer Curl",sets:"3",reps:"10–12",rest:"60s",notes:"Alternate or together"},
+        ],
+        cooldown:{neck:true,shoulder:true,golf:true,lower:false}
+      },
+      "Heavy Lower":{
+        warmup:["8 min total:","· Hip hinge drill × 10","· Goblet squat warmup × 2 sets light","· Cossack squats × 8 each side","· Lateral leg swings × 10 each"],
+        exercises:[
+          {name:"Dumbbell Deadlift",sets:"5",reps:"5",rest:"2 min",notes:"Both DBs — as heavy as form allows"},
+          {name:"Goblet Squat",sets:"4",reps:"6–8",rest:"90s",notes:"Heavy — controlled descent with pause"},
+          {name:"Bulgarian Split Squat",sets:"4",reps:"6–8 each",rest:"90s",notes:"Rear foot on bench — the hard one"},
+          {name:"Hip Thrust (on bench)",sets:"4",reps:"10",rest:"75s",notes:"Explosive up, controlled down"},
+          {name:"Single-Leg RDL",sets:"3",reps:"8 each",rest:"60s",notes:"Balance + posterior chain — go slow"},
+          {name:"Calf Raise",sets:"4",reps:"15 each",rest:"45s",notes:"Bench edge — maximum range"},
+        ],
+        cooldown:{neck:false,shoulder:false,golf:true,lower:true}
+      },
+      "Hypertrophy Upper":{
+        warmup:["5 min total:","· Shoulder circles × 10 each direction","· Push-up warmup × 10","· Light rows × 10","· Sleeper stretch × 30s each side"],
+        exercises:[
+          {name:"Dumbbell Bench Press",sets:"4",reps:"10–12",rest:"75s",notes:"Moderate — pump and squeeze"},
+          {name:"Dumbbell Row",sets:"4",reps:"12 each",rest:"75s",notes:"Slow eccentric — 3 count down"},
+          {name:"Arnold Press",sets:"3",reps:"12",rest:"60s",notes:"Full rotation — front + side delt"},
+          {name:"Incline Dumbbell Curl",sets:"3",reps:"12–15",rest:"60s",notes:"Stretch position — feel it lengthen"},
+          {name:"Overhead Tricep Extension",sets:"3",reps:"12–15",rest:"60s",notes:"Long head — full overhead stretch"},
+          {name:"Reverse Fly",sets:"3",reps:"15",rest:"45s",notes:"High volume — feel the rear delt"},
+        ],
+        cooldown:{neck:true,shoulder:true,golf:true,lower:false}
+      },
+      "Hypertrophy Lower":{
+        warmup:["5 min total:","· Leg swings × 10 each direction","· Hip circles × 10 each","· Bodyweight squats × 20","· World's greatest stretch × 4 each side"],
+        exercises:[
+          {name:"Goblet Squat",sets:"4",reps:"12–15",rest:"75s",notes:"Moderate — depth and squeeze focus"},
+          {name:"Walking Lunge",sets:"3",reps:"12 each",rest:"60s",notes:"Long stride, upright torso"},
+          {name:"Sumo Squat",sets:"3",reps:"12–15",rest:"60s",notes:"Wide, toes out — adductor + glute"},
+          {name:"Leg Curl",sets:"3",reps:"12",rest:"60s",notes:"Hold DB with feet — curl up"},
+          {name:"Glute Bridge",sets:"3",reps:"15",rest:"45s",notes:"2s pause at top every rep"},
+          {name:"Calf Raise",sets:"4",reps:"20 each",rest:"30s",notes:"Maximum range — bench edge"},
+        ],
+        cooldown:{neck:false,shoulder:false,golf:true,lower:true}
+      },
+      "Active Recovery":{
+        warmup:["Full session. No lifting. All mobility."],
+        exercises:[
+          {name:"Full Body Yoga Flow",sets:"1",reps:"20 min",rest:"—",notes:"Sun salutations, warrior series, seated twists"},
+          {name:"Hip 90/90 + Internal Rotation",sets:"1",reps:"2 min each side",rest:"—",notes:"Deep hip capsule work"},
+          {name:"Thoracic Extension over Bench",sets:"1",reps:"2 min",rest:"—",notes:"Drape upper back over bench edge — breathe"},
+          {name:"Couch Stretch",sets:"1",reps:"90s each side",rest:"—",notes:"Hip flexor + quad — crucial for swing and squat"},
+          {name:"PNF Hamstring",sets:"1",reps:"3×10s contract / 30s relax each",rest:"—",notes:"Contract against resistance, then relax deeper"},
+          {name:"Foam Roll",sets:"1",reps:"10 min",rest:"—",notes:"Lats and thoracic spine priority"},
+        ],
+        cooldown:{neck:true,shoulder:true,golf:true,lower:false}
+      }
+    }
+  }
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let currentPhase=0;
+const STORE_KEY='timWorkout_v3';
+
+function loadState(){
+  try{ return JSON.parse(localStorage.getItem(STORE_KEY))||{}; }catch(e){ return {}; }
+}
+function saveState(s){
+  try{ localStorage.setItem(STORE_KEY,JSON.stringify(s)); }catch(e){}
+}
+function getState(){ return loadState(); }
+
+// ─── PROGRESS ─────────────────────────────────────────────────────────────────
+function updateProgressBar(){
+  const s=getState();
+  if(!s.programStart){
+    s.programStart=Date.now();
+    saveState(s);
+  }
+  const dayNum=Math.min(90,Math.floor((Date.now()-s.programStart)/86400000)+1);
+  document.getElementById('dayBadge').textContent='Day '+dayNum;
+  const pct=Math.round((dayNum/90)*100);
+  document.getElementById('progressPct').textContent=pct+'%';
+  document.getElementById('progressFill').style.width=pct+'%';
+
+  // Count done sessions
+  const done=Object.keys(s).filter(k=>k.startsWith('day_')&&s[k]===true).length;
+  document.getElementById('doneCount').textContent=done;
+}
+
+// ─── NAV ──────────────────────────────────────────────────────────────────────
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('nav-'+id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ─── PHASE ────────────────────────────────────────────────────────────────────
+function selectPhase(idx){
+  currentPhase=idx;
+  document.querySelectorAll('.phase-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  const ph=PHASES[idx];
+  document.getElementById('phaseDesc').textContent=ph.desc;
+  renderCalendar(ph);
+  renderWorkouts(ph);
+}
+
+// ─── CALENDAR ─────────────────────────────────────────────────────────────────
+function renderCalendar(ph){
+  const container=document.getElementById('calendarContainer');
+  const s=getState();
+  if(!s.programStart){ s.programStart=Date.now(); saveState(s); }
+  const startDate=new Date(s.programStart);
+  startDate.setHours(0,0,0,0);
+  const today=new Date(); today.setHours(0,0,0,0);
+
+  // Build weeks for this phase
+  const weekStart=(ph.startWeek-1)*7;
+  const weekEnd=ph.endWeek*7;
+  const totalDays=weekEnd-weekStart;
+
+  // Group into months
+  const months={};
+  for(let d=0;d<totalDays;d++){
+    const date=new Date(startDate.getTime()+(weekStart+d)*86400000);
+    const mk=date.getFullYear()+'-'+(date.getMonth()+1);
+    if(!months[mk]) months[mk]={date:new Date(date.getFullYear(),date.getMonth(),1),days:[]};
+    months[mk].days.push({date,d:weekStart+d});
+  }
+
+  const DOW=['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  container.innerHTML=Object.values(months).map(m=>{
+    const firstDOW=m.date.getDay();
+    const cells=[];
+    for(let e=0;e<firstDOW;e++) cells.push(`<div class="cal-day empty"></div>`);
+    m.days.forEach(({date,d})=>{
+      const dow=date.getDay(); // 0=Sun
+      const schedIdx=dow===0?6:dow-1; // Mon=0
+      const dayName=ph.schedule[schedIdx];
+      const isRest=dayName==='Rest';
+      const isStretchRest=isRest;
+      const isToday=date.getTime()===today.getTime();
+      const dayKey='day_'+(Math.floor(d));
+      const isDone=s[dayKey]===true;
+      let cls='cal-day';
+      if(isRest) cls+=' rest-day'+(isStretchRest?' stretch-rest':'');
+      else cls+=' workout-day';
+      if(isDone) cls+=' done';
+      if(isToday) cls+=' today-marker';
+      const shortName=isRest?'Rest':dayName.replace('Hypertrophy ','Hyp. ').replace('Active Recovery','Active').replace('Lower Body','Lower').replace('Upper Body','Upper').replace('Heavy ','Hvy ').replace('Full Body / Core','Full Body');
+      cells.push(`<div class="${cls}" onclick="toggleCalDay('${dayKey}','${isRest}')">
+        <div class="cal-day-num">${date.getDate()}</div>
+        <div class="cal-day-name">${shortName}</div>
+      </div>`);
+    });
+    return `<div class="calendar-month">
+      <div class="cal-month-title">${MONTH_NAMES[m.date.getMonth()]} ${m.date.getFullYear()}</div>
+      <div class="cal-grid">
+        ${DOW.map(d=>`<div class="cal-dow">${d}</div>`).join('')}
+        ${cells.join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCalDay(key){
+  const s=getState();
+  s[key]=!s[key];
+  saveState(s);
+  updateProgressBar();
+  renderCalendar(PHASES[currentPhase]);
+}
+
+// ─── WORKOUT RENDER ───────────────────────────────────────────────────────────
+function esc(s){return s.replace(/[^a-zA-Z0-9]/g,'_');}
+
+function renderWorkouts(ph){
+  const list=document.getElementById('workoutList');
+  const s=getState();
+  const days=Object.entries(ph.days);
+
+  // Also render rest day stretch cards
+  const hasRestDay=ph.schedule.includes('Rest');
+  let html='';
+
+  // Workout days
+  days.forEach(([dayName,workout])=>{
+    const cd=workout.cooldown;
+    const tags=[
+      cd.neck?'<span class="tag tag-neck">Neck</span>':'',
+      cd.shoulder?'<span class="tag tag-shoulder">Shoulder</span>':'',
+      cd.golf?'<span class="tag tag-golf">Golf</span>':'',
+      cd.lower?'<span class="tag tag-lower">Lower Flex</span>':'',
+    ].join('');
+    const wKey='workout_done_'+ph.cls+'_'+esc(dayName);
+    const isDone=s[wKey]===true;
+    html+=`<div class="workout-card ${ph.cls}" id="card-${esc(dayName)}">
+      <div class="workout-header" onclick="toggleWorkout('${esc(dayName)}')">
+        <div>
+          <div class="workout-title">${dayName}</div>
+          <div class="workout-meta">${workout.exercises.length} exercises</div>
+          <div class="workout-tags">${tags}</div>
+        </div>
+        <div class="chevron">⌄</div>
+      </div>
+      <div class="card-checkbox-row">
+        <button class="card-check-btn ${isDone?'checked':''}" onclick="toggleWorkoutDone('${wKey}',event)">
+          <span class="chk-icon">${isDone?'✓':'○'}</span>
+          <span>${isDone?'Completed':'Mark Complete'}</span>
+        </button>
+      </div>
+      <div class="workout-body" id="body-${esc(dayName)}">
+        ${renderPreStretch(dayName)}
+        ${renderWarmup(workout.warmup)}
+        ${renderExCards(workout.exercises,ph.cls)}
+        ${renderCooldown(workout.cooldown,dayName)}
+      </div>
+    </div>`;
+  });
+
+  // Rest day card
+  if(hasRestDay){
+    const rKey='rest_stretch_'+ph.cls;
+    const rDone=s[rKey]===true;
+    html+=`<div class="rest-stretch-card" id="card-rest-day">
+      <div class="rest-stretch-header" onclick="toggleRestCard()">
+        <div>
+          <div class="rest-stretch-title">Rest Day Stretching</div>
+          <div class="rest-stretch-meta">10 stretches · ~20 min · Do on every Rest day</div>
+        </div>
+        <div class="chevron" style="color:var(--blue)">⌄</div>
+      </div>
+      <div class="card-checkbox-row" style="background:var(--blue-dim);border-top-color:var(--blue)">
+        <button class="card-check-btn ${rDone?'checked':''}" onclick="toggleRestDone('${rKey}',event)">
+          <span class="chk-icon">${rDone?'✓':'○'}</span>
+          <span>${rDone?'Completed':'Mark Complete'}</span>
+        </button>
+      </div>
+      <div class="rest-stretch-body" id="body-rest-day">
+        <div style="padding:0 14px 14px;">
+          ${REST_STRETCH.map((item,i)=>`
+            <div style="display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--blue);flex-shrink:0;margin-top:1px;">${i+1}</div>
+              <div>
+                <div style="font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--text);font-weight:600;">${item.name}</div>
+                <div style="font-size:12px;color:var(--blue2);margin-top:2px;">${item.duration}</div>
+                ${item.cue?`<div style="font-size:12px;color:var(--muted);font-style:italic;margin-top:3px;line-height:1.5;">${item.cue}</div>`:''}
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  list.innerHTML=html;
+}
+
+function renderPreStretch(dayName){
+  const stretches=PRE_STRETCH[dayName];
+  if(!stretches||!stretches.length) return '';
+  return `<div class="prestretch-block">
+    <div class="block-label amber">Pre-Workout Stretch · ${dayName}</div>
+    ${stretches.map(s=>`<div class="stretch-item">
+      <span class="stretch-bullet">▸</span>
+      <div>
+        <div class="stretch-name">${s.name}</div>
+        <div class="stretch-dur">${s.duration}${s.cue?' — '+s.cue:''}</div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderWarmup(lines){
+  return `<div class="warmup-block">
+    <div class="block-label gold">Movement Warm-Up</div>
+    ${lines.map((l,i)=>`<div class="warmup-line ${i===0?'dim':''}">${l}</div>`).join('')}
+  </div>`;
+}
+
+function renderExCards(exs,cls){
+  return `<div class="ex-section ${cls}">
+    <div class="ex-section-label">Exercises</div>
+    ${exs.map((ex,i)=>{
+      const exKey='exdone_'+esc(ex.name+cls+i);
+      const s=getState();
+      const isDone=s[exKey]===true;
+      const data=EX_DATA[ex.name];
+      const hasData=!!data;
+      return `<div class="ex-card" id="excard-${exKey}">
+        <div class="ex-card-header" onclick="toggleExCard('${exKey}')">
+          <div class="ex-card-left">
+            <div class="ex-num">Exercise ${i+1}</div>
+            <div class="ex-name-large">${ex.name}</div>
+            <div class="ex-stats-row">
+              <div class="ex-stat"><div class="ex-stat-val">${ex.sets}</div><div class="ex-stat-lbl">Sets</div></div>
+              <div class="ex-stat"><div class="ex-stat-val" style="font-size:16px;">${ex.reps}</div><div class="ex-stat-lbl">Reps</div></div>
+              <div class="ex-stat"><div class="ex-stat-val" style="font-size:16px;">${ex.rest}</div><div class="ex-stat-lbl">Rest</div></div>
+            </div>
+            ${ex.notes?`<div class="ex-notes-large">${ex.notes}</div>`:''}
+          </div>
+          ${hasData?`<div class="ex-expand-chevron">⌄</div>`:''}
+        </div>
+        ${hasData?`<div class="ex-image-panel">
+          <div class="ex-images-grid">
+            ${data.images.map(img=>`<div class="ex-img-wrap">
+              <img src="${img.url}" alt="${ex.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'ex-img-placeholder\\'><div class=\\'ex-img-icon\\'>🏋️</div><div class=\\'ex-img-link\\'><a href=\\"https://www.youtube.com/results?search_query=${encodeURIComponent(ex.name+' exercise form')}\\" target=\\"_blank\\">Watch on YouTube →</a></div></div>'">
+              <div class="ex-img-label">${img.label}</div>
+            </div>`).join('')}
+          </div>
+          <div class="ex-form-cues">
+            <div class="ex-form-title">Form Cues</div>
+            ${data.cues.map(c=>`<div class="ex-form-cue">${c}</div>`).join('')}
+          </div>
+        </div>`:''}
+        <div class="ex-done-row">
+          <button class="ex-done-btn ${isDone?'done':''}" onclick="toggleExDone('${exKey}',event)">
+            <span>${isDone?'✓ Done':'○ Mark Set Done'}</span>
+          </button>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function renderCooldown(cd,dayName){
+  const sections=[];
+  if(cd.neck) sections.push({key:'neck',cls:'neck',icon:'⊙',title:'Neck Protocol',time:'~9 min',items:NECK});
+  if(cd.shoulder) sections.push({key:'shoulder',cls:'shoulder',icon:'◎',title:'Shoulder & Upper Back',time:'~12 min',items:SHOULDER});
+  if(cd.golf) sections.push({key:'golf',cls:'golf',icon:'⛳',title:'Golf Flexibility',time:'~10 min',items:GOLF});
+  if(cd.lower&&LOWER_FLEX[dayName]) sections.push({key:'lower',cls:'lower',icon:'◇',title:'Lower Body Flexibility',time:'~8 min',items:LOWER_FLEX[dayName]});
+  return `<div class="cooldown-wrap">
+    <hr class="cool-divider">
+    <div class="block-label green" style="margin-bottom:10px">Cool-Down & Flexibility</div>
+    ${sections.map(sec=>`
+      <div class="cool-section ${sec.cls}" id="cool-${esc(dayName)}-${sec.key}">
+        <div class="cool-header" onclick="toggleCool('${esc(dayName)}','${sec.key}')">
+          <div class="cool-header-left">
+            <span class="cool-icon">${sec.icon}</span>
+            <div><div class="cool-title">${sec.title}</div><div class="cool-time">${sec.time}</div></div>
+          </div>
+          <span class="cool-chevron">⌄</span>
+        </div>
+        <div class="cool-body">
+          ${sec.items.map(item=>`<div class="cool-item">
+            <span class="cool-dot">▸</span>
+            <div>
+              <div class="cool-item-name">${item.name}</div>
+              ${item.duration?`<div class="cool-duration">${item.duration}</div>`:''}
+              ${item.cue?`<div class="cool-cue">${item.cue}</div>`:''}
+            </div>
+          </div>`).join('')}
+        </div>
+      </div>`).join('')}
+  </div>`;
+}
+
+// ─── TOGGLE FUNCTIONS ─────────────────────────────────────────────────────────
+function toggleWorkout(dayKey){
+  const card=document.getElementById('card-'+dayKey);
+  if(!card) return;
+  const isOpen=card.classList.contains('open');
+  document.querySelectorAll('.workout-card').forEach(c=>c.classList.remove('open'));
+  if(!isOpen){
+    card.classList.add('open');
+    setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'start'}),50);
+  }
+}
+function toggleRestCard(){
+  const card=document.getElementById('card-rest-day');
+  if(!card) return;
+  card.classList.toggle('open');
+}
+function toggleCool(dayKey,sectionKey){
+  const el=document.getElementById('cool-'+dayKey+'-'+sectionKey);
+  if(el) el.classList.toggle('open');
+}
+function toggleExCard(exKey){
+  const card=document.getElementById('excard-'+exKey);
+  if(card) card.classList.toggle('open');
+}
+function toggleWorkoutDone(key,e){
+  e.stopPropagation();
+  const s=getState();
+  s[key]=!s[key];
+  saveState(s);
+  updateProgressBar();
+  const btn=e.currentTarget;
+  const isDone=s[key];
+  btn.classList.toggle('checked',isDone);
+  btn.innerHTML=`<span class="chk-icon">${isDone?'✓':'○'}</span><span>${isDone?'Completed':'Mark Complete'}</span>`;
+}
+function toggleRestDone(key,e){
+  e.stopPropagation();
+  const s=getState();
+  s[key]=!s[key];
+  saveState(s);
+  updateProgressBar();
+  const btn=e.currentTarget;
+  const isDone=s[key];
+  btn.classList.toggle('checked',isDone);
+  btn.innerHTML=`<span class="chk-icon">${isDone?'✓':'○'}</span><span>${isDone?'Completed':'Mark Complete'}</span>`;
+}
+function toggleExDone(key,e){
+  e.stopPropagation();
+  const s=getState();
+  s[key]=!s[key];
+  saveState(s);
+  const card=document.getElementById('excard-'+key);
+  if(card){
+    const btn=card.querySelector('.ex-done-btn');
+    const isDone=s[key];
+    if(btn){ btn.classList.toggle('done',isDone); btn.innerHTML=`<span>${isDone?'✓ Done':'○ Mark Set Done'}</span>`; }
+  }
+}
+function confirmReset(){
+  if(confirm('Reset all progress? This cannot be undone.')){
+    localStorage.removeItem(STORE_KEY);
+    location.reload();
+  }
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+updateProgressBar();
+selectPhase(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tim's Program">
+<meta name="theme-color" content="#080a0f">
+<title>Tim's 90-Day Program</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080a0f;--bg2:#0d1018;--bg3:#111520;
+  --border:#1e2330;--border2:#252d3d;
+  --text:#e8e4dc;--muted:#4a5168;--muted2:#6b7590;
+  --gold:#c9a84c;--gold2:#e8c97a;--gold-dim:#3d2e0f;
+  --green:#4a9e7a;--green2:#6dbf9e;--green-dim:#0a1f14;
+  --blue:#4a7ab5;--blue2:#7aaae0;--blue-dim:#0a1825;
+  --rose:#b56a6a;--rose2:#e09090;--rose-dim:#200e0e;
+  --amber:#c97d2a;--amber2:#f0a860;--amber-dim:#1e1200;
+  --safe-top:env(safe-area-inset-top,44px);
+  --safe-bottom:env(safe-area-inset-bottom,34px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{background:var(--bg);}
+body{font-family:'DM Mono',monospace;color:var(--text);min-height:100dvh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.4;}
+
+/* ── HEADER ── */
+.hdr{position:sticky;top:0;z-index:200;padding-top:var(--safe-top);background:rgba(8,10,15,.95);backdrop-filter:blur(28px) saturate(1.5);-webkit-backdrop-filter:blur(28px) saturate(1.5);border-bottom:1px solid var(--border);}
+.hdr-in{padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
+.hdr-title{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;color:var(--text);}
+.hdr-sub{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.hdr-day{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--gold);}
+
+/* ── HERO ── */
+.hero{padding:22px 18px 0;}
+.hero-name{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;line-height:1;color:var(--text);}
+.hero-name em{font-style:italic;color:var(--gold);}
+.hero-stats{display:flex;gap:0;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+.hstat{flex:1;text-align:center;padding:0 6px;border-right:1px solid var(--border);}
+.hstat:last-child{border-right:none;}
+.hstat-val{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--gold2);line-height:1;}
+.hstat-lbl{font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+/* ── PROGRESS ── */
+.prog-wrap{padding:16px 18px 0;}
+.prog-row{display:flex;justify-content:space-between;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+.prog-track{height:2px;background:var(--border);border-radius:1px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:1px;transition:width 1s cubic-bezier(.16,1,.3,1);}
+.prog-marks{display:flex;margin-top:5px;font-size:8px;color:var(--muted);}
+.prog-mark{flex:1;}
+.prog-mark:nth-child(2){text-align:center;}
+.prog-mark:last-child{text-align:right;}
+
+/* ── PHASE TABS ── */
+.phase-tabs{padding:16px 18px 0;display:flex;gap:6px;}
+.ptab{flex:1;padding:10px 6px;border-radius:10px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;text-align:center;transition:all .22s;position:relative;overflow:hidden;}
+.ptab::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .22s;}
+.ptab.p1::before{background:radial-gradient(ellipse at 50% 0%,var(--green-dim),transparent 70%);}
+.ptab.p2::before{background:radial-gradient(ellipse at 50% 0%,var(--blue-dim),transparent 70%);}
+.ptab.p3::before{background:radial-gradient(ellipse at 50% 0%,var(--rose-dim),transparent 70%);}
+.ptab.on::before{opacity:1;}
+.ptab.on.p1{border-color:var(--green);}
+.ptab.on.p2{border-color:var(--blue);}
+.ptab.on.p3{border-color:var(--rose);}
+.ptab-wk{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;position:relative;}
+.ptab-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--muted2);position:relative;transition:color .22s;}
+.ptab.on.p1 .ptab-name{color:var(--green2);}
+.ptab.on.p2 .ptab-name{color:var(--blue2);}
+.ptab.on.p3 .ptab-name{color:var(--rose2);}
+.ptab-sub{font-size:8px;color:var(--muted);margin-top:2px;position:relative;}
+
+/* ── PHASE DESC ── */
+.pdesc{margin:14px 18px 0;padding:12px 14px;background:var(--bg2);border-radius:10px;border-left:2px solid var(--gold-dim);font-size:13px;color:var(--muted2);line-height:1.7;font-family:'Cormorant Garamond',serif;font-style:italic;}
+
+/* ════════════════════════════════════
+   CALENDAR — MAIN FOCUS
+   ════════════════════════════════════ */
+.cal-section{padding:22px 14px 0;}
+.cal-section-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--text);margin-bottom:4px;}
+.cal-section-title em{font-style:italic;color:var(--gold);}
+.cal-section-sub{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;}
+
+.cal-month{margin-bottom:24px;}
+.cal-month-hdr{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.cal-month-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold2);}
+.cal-month-year{font-size:10px;color:var(--muted);letter-spacing:.1em;}
+
+.cal-dow-row{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px;}
+.cal-dow{font-size:9px;color:var(--muted);text-align:center;padding:2px 0;letter-spacing:.06em;}
+
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-cell{border-radius:8px;overflow:hidden;}
+.cal-cell.empty{background:transparent;}
+
+/* The tap target — the visible tile */
+.cal-tile{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 5px 7px;text-align:center;cursor:pointer;transition:border-color .18s,background .18s;position:relative;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;}
+.cal-tile.rest{opacity:.45;cursor:default;}
+.cal-tile.workout{border-color:var(--border2);}
+.cal-tile.today{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold-dim);}
+.cal-tile.done{background:var(--green-dim);border-color:var(--green);}
+.cal-tile.rest.done{background:var(--blue-dim);border-color:var(--blue);opacity:1;}
+
+.cal-num{font-size:13px;font-weight:500;color:var(--muted2);margin-bottom:3px;line-height:1;}
+.cal-tile.today .cal-num{color:var(--gold2);}
+.cal-tile.done .cal-num{color:var(--green2);}
+.cal-tile.rest.done .cal-num{color:var(--blue2);}
+.cal-tile.workout .cal-num{color:var(--text);}
+
+.cal-tag{font-size:7px;color:var(--muted);line-height:1.25;letter-spacing:.02em;text-align:center;}
+.cal-tile.done .cal-tag{color:var(--green);}
+.cal-tile.rest.done .cal-tag{color:var(--blue2);}
+
+.cal-check{position:absolute;top:4px;right:5px;font-size:9px;color:var(--green);display:none;}
+.cal-tile.done .cal-check{display:block;}
+.cal-tile.rest.done .cal-check{color:var(--blue2);}
+
+/* ── DAY DROPDOWN (accordion below tile row) ── */
+.cal-row-wrap{margin-bottom:4px;}
+.cal-row-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-dropdown{display:none;margin-top:4px;background:var(--bg2);border:1px solid var(--border2);border-radius:12px;overflow:hidden;}
+.cal-dropdown.open{display:block;}
+.cal-dd-hdr{padding:14px 16px 10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.cal-dd-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;}
+.cal-dd-date{font-size:10px;color:var(--muted);margin-top:2px;}
+.cal-dd-close{font-size:22px;color:var(--muted);cursor:pointer;padding:2px 6px;line-height:1;}
+.cal-dd-body{padding:0 0 6px;}
+
+/* Sections inside dropdown */
+.dd-section{border-bottom:1px solid var(--border);}
+.dd-section:last-child{border-bottom:none;}
+.dd-section-hdr{padding:12px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;-webkit-user-select:none;user-select:none;}
+.dd-section-name{font-size:12px;letter-spacing:.12em;text-transform:uppercase;}
+.dd-section-hdr .dd-chev{font-size:14px;color:var(--muted);transition:transform .2s;}
+.dd-section.open .dd-chev{transform:rotate(180deg);}
+.dd-section-body{display:none;padding:0 16px 14px;}
+.dd-section.open .dd-section-body{display:block;}
+
+/* Stretch items in dropdown */
+.dd-stretch{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.dd-stretch:last-child{border-bottom:none;}
+.dd-stretch-num{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--amber);flex-shrink:0;width:18px;margin-top:1px;}
+.dd-stretch-body{}
+.dd-stretch-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--text);}
+.dd-stretch-dur{font-size:11px;color:var(--amber2);margin-top:2px;}
+.dd-stretch-cues{margin-top:6px;}
+.dd-stretch-cue{font-size:12px;color:var(--muted2);line-height:1.65;padding:2px 0;display:flex;gap:7px;}
+.dd-stretch-cue::before{content:'·';color:var(--amber);flex-shrink:0;}
+
+/* Exercise items in dropdown */
+.dd-ex{background:var(--bg3);border-radius:10px;margin-bottom:8px;overflow:hidden;}
+.dd-ex-hdr{padding:13px 14px 10px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;}
+.dd-ex-left{}
+.dd-ex-num{font-size:9px;color:var(--muted);letter-spacing:.1em;margin-bottom:2px;}
+.dd-ex-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--text);}
+.dd-ex-stats{display:flex;gap:16px;margin-top:8px;}
+.dd-stat{}
+.dd-stat-val{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;line-height:1;}
+.dd-stat-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.dd-ex-note{font-size:12px;color:var(--muted2);font-style:italic;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);line-height:1.55;}
+.dd-ex-note::before{content:'→ ';}
+.dd-ex-chev{font-size:14px;color:var(--muted);transition:transform .2s;flex-shrink:0;margin-left:6px;margin-top:4px;}
+.dd-ex.open .dd-ex-chev{transform:rotate(180deg);}
+.dd-ex-cues{display:none;padding:4px 14px 14px;}
+.dd-ex.open .dd-ex-cues{display:block;}
+.dd-ex-cue-title{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.dd-ex-cue{font-size:13px;color:var(--muted2);line-height:1.7;padding:3px 0;display:flex;gap:8px;}
+.dd-ex-cue::before{content:'·';flex-shrink:0;}
+.dd-ex-done-row{padding:8px 14px;border-top:1px solid var(--border);background:rgba(0,0,0,.2);}
+.ex-done-btn{display:flex;align-items:center;gap:7px;background:none;border:1px solid var(--border2);border-radius:7px;padding:7px 14px;cursor:pointer;color:var(--muted);font-size:12px;font-family:'DM Mono',monospace;transition:all .18s;}
+.ex-done-btn.done{background:var(--green-dim);border-color:var(--green);color:var(--green2);}
+
+/* Cooldown in dropdown */
+.dd-cool-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.dd-cool-item:last-child{border-bottom:none;}
+.dd-cool-dot{font-size:8px;color:var(--muted);margin-top:5px;flex-shrink:0;}
+.dd-cool-name{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--muted2);}
+.dd-cool-dur{font-size:11px;color:var(--muted);margin-top:1px;}
+.dd-cool-cue{font-size:12px;color:var(--muted);font-style:italic;line-height:1.5;margin-top:3px;}
+
+/* Workout done button */
+.dd-done-row{padding:12px 16px;border-top:1px solid var(--border);background:rgba(0,0,0,.25);}
+.dd-done-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:none;border:1px solid var(--border2);border-radius:9px;padding:11px;cursor:pointer;color:var(--muted);font-size:13px;font-family:'DM Mono',monospace;transition:all .2s;}
+.dd-done-btn.done{background:var(--green-dim);border-color:var(--green);color:var(--green2);}
+.dd-done-btn.rest-done{background:var(--blue-dim);border-color:var(--blue);color:var(--blue2);}
+
+/* Phase color accents in dropdown */
+.p1-accent .cal-dd-title{color:var(--green2);}
+.p2-accent .cal-dd-title{color:var(--blue2);}
+.p3-accent .cal-dd-title{color:var(--rose2);}
+.p1-accent .dd-stat-val{color:var(--green2);}
+.p2-accent .dd-stat-val{color:var(--blue2);}
+.p3-accent .dd-stat-val{color:var(--rose2);}
+.p1-accent .dd-ex-cue::before{color:var(--green);}
+.p2-accent .dd-ex-cue::before{color:var(--blue);}
+.p3-accent .dd-ex-cue::before{color:var(--rose);}
+
+/* ── NOTES PAGE ── */
+.notes-wrap{padding:22px 18px 40px;}
+.notes-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;color:var(--text);margin-bottom:5px;}
+.notes-sub{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:22px;}
+.note-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;}
+.note-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--gold2);margin-bottom:8px;}
+.note-text{font-size:13px;color:var(--muted2);line-height:1.8;}
+.reset-btn{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:11px;font-family:'DM Mono',monospace;padding:8px 16px;cursor:pointer;margin-top:14px;display:block;margin-left:auto;margin-right:auto;}
+
+/* ── BOTTOM NAV ── */
+.bnav{position:fixed;bottom:0;left:0;right:0;padding-bottom:var(--safe-bottom);background:rgba(8,10,15,.96);backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);border-top:1px solid var(--border);display:flex;z-index:100;}
+.nbtn{flex:1;padding:11px 8px 9px;border:none;background:transparent;cursor:pointer;text-align:center;}
+.nbtn:active{opacity:.6;}
+.nbtn-icon{font-size:19px;display:block;margin-bottom:3px;}
+.nbtn-lbl{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.nbtn.on .nbtn-lbl{color:var(--gold);}
+
+.page{display:none;padding-bottom:110px;}
+.page.on{display:block;}
+@keyframes fu{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.fu{animation:fu .35s ease forwards;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-in">
+    <div><div class="hdr-title">Tim's Program</div><div class="hdr-sub">90 Days · Strength &amp; Golf Mobility</div></div>
+    <div class="hdr-day" id="dayBadge">Day 1</div>
+  </div>
+</div>
+
+<!-- PROGRAM PAGE -->
+<div class="page on" id="page-program">
+
+  <div class="hero fu">
+    <div class="hero-name">Built for<br><em>Tim.</em></div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-val">90</div><div class="hstat-lbl">Days</div></div>
+      <div class="hstat"><div class="hstat-val">3</div><div class="hstat-lbl">Phases</div></div>
+      <div class="hstat"><div class="hstat-val" id="doneCount">0</div><div class="hstat-lbl">Done</div></div>
+      <div class="hstat"><div class="hstat-val">⛳</div><div class="hstat-lbl">Golf</div></div>
+    </div>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-row"><span>Progress</span><span id="progPct">0%</span></div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    <div class="prog-marks">
+      <span class="prog-mark">Reactivation</span>
+      <span class="prog-mark">Building</span>
+      <span class="prog-mark">Full Strength</span>
+    </div>
+  </div>
+
+  <div class="phase-tabs">
+    <div class="ptab p1 on" onclick="selPhase(0)"><div class="ptab-wk">Wks 1–4</div><div class="ptab-name">Phase 1</div><div class="ptab-sub">Reactivation</div></div>
+    <div class="ptab p2" onclick="selPhase(1)"><div class="ptab-wk">Wks 5–8</div><div class="ptab-name">Phase 2</div><div class="ptab-sub">Building</div></div>
+    <div class="ptab p3" onclick="selPhase(2)"><div class="ptab-wk">Wks 9–13</div><div class="ptab-name">Phase 3</div><div class="ptab-sub">Full Strength</div></div>
+  </div>
+
+  <div class="pdesc" id="phaseDesc"></div>
+
+  <!-- CALENDAR — MAIN FOCUS -->
+  <div class="cal-section">
+    <div class="cal-section-title">Your <em>Schedule.</em></div>
+    <div class="cal-section-sub">Tap any day to see that day's full workout</div>
+    <div id="calContainer"></div>
+  </div>
+
+</div>
+
+<!-- NOTES PAGE -->
+<div class="page" id="page-notes">
+  <div class="notes-wrap">
+    <div class="notes-title">Program<br><em style="font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold)">Notes.</em></div>
+    <div class="notes-sub">Tim · New Orleans · 2025</div>
+    <div class="note-card"><div class="note-title">Progressive Overload</div><div class="note-text">Add 2–5 lbs when you hit the top of a rep range for 2 consecutive sessions with clean form. Never chase weight at the cost of technique. Your muscle memory will return faster than you expect — the strength is still in there.</div></div>
+    <div class="note-card"><div class="note-title">Flexibility Is the Program</div><div class="note-text">The pre-workout stretches, warm-up, and full cooldown are mandatory. They are not supplemental — they are half the workout. Skipping them is exactly where returning athletes get hurt and lose progress.</div></div>
+    <div class="note-card"><div class="note-title">The Golf Transfer</div><div class="note-text">Thoracic rotation, hip internal rotation, and lat length directly determine swing arc and clubhead speed. The flexibility sessions in this program will show up on the course before the strength does. Prioritize them accordingly.</div></div>
+    <div class="note-card"><div class="note-title">Reps in Reserve (RIR)</div><div class="note-text">Phase 1: stop 3–4 reps before failure every set. Phase 2: 2–3 reps early. Phase 3: 1–2 reps early on strength sets, closer to failure on hypertrophy days. RIR protects your connective tissue while it adapts — it is not weakness, it is strategy.</div></div>
+    <div class="note-card"><div class="note-title">Neck — Every Single Day</div><div class="note-text">The chin tuck (cervical retraction) takes 2 minutes and should be done every day including rest days. It is the single highest-return flexibility habit in this program. Forward head posture from desk work compresses the cervical spine and limits your backswing — fix it daily.</div></div>
+    <div class="note-card"><div class="note-title">Sleep &amp; Nutrition</div><div class="note-text">Target 0.7–1g of protein per lb of bodyweight daily. Treat 8 hours of sleep as a non-negotiable part of the program — muscle, tendon, and connective tissue repair happens at rest, not in the gym. Do not aggressively cut calories while running this program simultaneously.</div></div>
+    <div class="note-card"><div class="note-title">Joint Pain vs. Soreness</div><div class="note-text">Muscle soreness (DOMS) in weeks 1–2 is expected and a good sign. Sharp or persistent pain in a joint — knee, shoulder, elbow, or lower back — is a different signal entirely. Rest that day and reassess before returning. One missed session costs nothing. An injury costs weeks.</div></div>
+    <div style="text-align:center;padding-top:8px;"><button class="reset-btn" onclick="confirmReset()">Reset All Progress</button></div>
+  </div>
+</div>
+
+<div class="bnav">
+  <button class="nbtn on" id="nav-program" onclick="showPage('program')"><span class="nbtn-icon">◈</span><span class="nbtn-lbl">Program</span></button>
+  <button class="nbtn" id="nav-notes" onclick="showPage('notes')"><span class="nbtn-icon">◇</span><span class="nbtn-lbl">Notes</span></button>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════════════
+
+// ── PRE-WORKOUT STRETCHES ─────────────────────────────────────────
+const PRE = {
+"Upper Body A":[
+  {name:"Doorway Chest Stretch",dur:"60s each side",cues:["Stand in a doorway with your arm at 90 degrees, elbow bent, forearm resting on the doorframe","Step your same-side foot forward through the doorway until you feel tension across the chest and front of the shoulder","Keep your shoulder blade pulled down and back — do not let the shoulder shrug up toward your ear","Breathe deeply into the stretch and hold without bouncing","Repeat at a higher arm position (arm above 90 degrees) to hit the lower pec fibers"]},
+  {name:"Cross-Body Shoulder Stretch",dur:"45s each side",cues:["Bring one arm straight across your chest at shoulder height","Use the opposite hand to gently pull the arm closer to your chest","Keep the shoulder of the stretching arm pressed DOWN — resist the urge to let it rise","You should feel the stretch deep in the posterior shoulder and rear deltoid","Turn your head away from the stretching arm to increase intensity slightly"]},
+  {name:"Overhead Lat Reach",dur:"45s each side",cues:["Stand tall and raise one arm fully overhead","Lean your torso to the opposite side — feel the entire side of your body stretch from hip to fingertip","The lat (the large muscle from your armpit to your hip) is what you are targeting here","Keep both feet flat and do not let your hips shift — the movement is purely lateral","You can grab a doorframe overhead for a deeper stretch"]},
+  {name:"Thoracic Rotation (seated)",dur:"45s each side",cues:["Sit on the edge of a bench or chair, feet flat on the floor","Cross your arms over your chest or interlace your hands behind your head","Rotate your upper body as far as possible to one side — only your upper back moves, not your hips","Hold at the end of your range and breathe into it — with each exhale try to rotate slightly further","This is the primary movement of the golf swing — treat it with priority"]},
+  {name:"Wrist Flexor Stretch",dur:"30s each side",cues:["Extend one arm straight in front of you with the palm facing up","Use the other hand to gently press the fingers downward toward the floor","You will feel the stretch along the inside of the forearm and into the wrist","Hold steady — do not force it","Switch to palm facing DOWN and repeat for the extensor side"]},
+  {name:"Scapular Wall Slides",dur:"10 slow reps",cues:["Stand with your back flat against a wall, feet a few inches out","Press your lower back, upper back, and both arms (bent at 90 degrees) flat against the wall","Slowly slide your arms upward overhead while keeping all contact points on the wall","Wherever your arms lose contact with the wall is your mobility limit — work that range","Slide back down with control — this activates the lower trapezius and serratus anterior"]},
+],
+"Lower Body A":[
+  {name:"Hip Flexor Lunge Stretch",dur:"60s each side",cues:["Step one foot forward into a deep lunge position and lower the back knee to the floor or mat","The front shin should be vertical — if the knee shoots forward past the toes, step further out","Tuck your pelvis slightly under (posterior pelvic tilt) to deepen the hip flexor stretch in the back leg","Raise your same-side arm as the back leg overhead to add a lat and oblique component","You are stretching the psoas and iliacus — the muscles most shortened from sitting"]},
+  {name:"Adductor Squat Hold",dur:"60s",cues:["Take a wide stance with toes pointing out at roughly 45 degrees","Lower into a deep squat and rest your elbows on the inside of your knees","Use your elbows to gently press your knees outward — this deepens the inner thigh stretch","Keep your chest tall and spine neutral — do not round the lower back","Breathe deeply and let gravity deepen the position with each exhale"]},
+  {name:"Hamstring Standing Fold",dur:"45s each side",cues:["Stand with feet hip-width apart and hinge forward at the hip with a flat back","Once you feel hamstring tension, stop — do not round your lower back to reach further","Let your hands hang or lightly touch your shins or the floor","After 20 seconds, bend one knee slightly to shift the stretch to the opposite hamstring","The goal is hamstring length — not touching the floor"]},
+  {name:"Ankle Circles and Dorsiflexion",dur:"30s each foot",cues:["Draw slow, controlled circles with your foot in both directions — 10 each way","Then stand facing a wall, place one foot a few inches from the base, and push your knee forward toward the wall","Keep your heel flat on the floor — this tests and improves ankle dorsiflexion","Ankle mobility directly determines squat depth — limited ankles force forward lean and knee collapse","Hold the knee-forward position for 5 seconds and repeat 10 times per side"]},
+  {name:"Glute Activation — Clamshells",dur:"15 reps each side",cues:["Lie on your side with hips stacked and knees bent at 90 degrees","Keeping feet together, rotate the top knee upward toward the ceiling like a clamshell opening","Stop at the top before your pelvis tilts — the movement should be isolated to the hip","Squeeze hard at the top for one second before lowering slowly","If this feels easy, place a hand on the glute to confirm it is firing — not the TFL (hip flexor near the pocket)"]},
+  {name:"Cossack Squat Hold",dur:"40s each side",cues:["Stand with feet wider than shoulder width and toes pointing slightly out","Shift your weight to one side and lower into a deep side lunge, bending only the one knee","The opposite leg stays straight with the foot flat or heel slightly raised","Keep your chest up — do not collapse forward","This stretches the inner thigh (adductors), groin, and hip capsule simultaneously — critical for lower body health"]},
+],
+"Full Body / Core":[
+  {name:"Cat-Cow",dur:"10 slow reps",cues:["Start on all fours with wrists under shoulders and knees under hips","Cow: inhale and let your belly drop toward the floor, lift your head and tailbone simultaneously","Cat: exhale and round your spine toward the ceiling, tuck chin to chest and tailbone under","Move slowly through the full range — this lubricates every vertebral segment in your spine","Do not rush — 3 seconds in each direction"]},
+  {name:"World's Greatest Stretch",dur:"5 each side",cues:["Start in a push-up position and step one foot up to the outside of the same-side hand","Drop your back knee to the floor and rest it there","Rotate the same arm as your front foot upward toward the ceiling, following it with your eyes","Return that hand to the floor, then straighten both legs and push your hips upward into a hamstring stretch","This is one of the most complete single stretches in existence — it hits the hip flexor, hamstring, thoracic spine, and shoulder simultaneously"]},
+  {name:"Hip 90/90",dur:"60s each side",cues:["Sit on the floor with one leg in front bent at 90 degrees and the other leg to the side also bent at 90 degrees","The front shin is parallel to your body, the rear shin points behind you","Sit as tall as possible — do not lean heavily to either side","Try to get both sitting bones toward the floor","This position addresses both internal rotation (front hip) and external rotation (rear hip) simultaneously — gold for golf"]},
+  {name:"Thoracic Rotation Kneeling",dur:"40s each side",cues:["Kneel on both knees and place both hands behind your head","Keep your hips completely still and square — only your upper back moves","Rotate your upper body to one side as far as possible","Hold at the end of range for 3 breaths before rotating to the other side","You should feel rotation occurring between your shoulder blades — if you feel it in your lower back, tighten your core more"]},
+  {name:"Inchworm",dur:"6 reps",cues:["Stand with feet hip-width apart and hinge forward to place both hands on the floor","Walk your hands forward until you are in a push-up position — keep your legs as straight as possible throughout","Do one push-up at the bottom (optional but recommended)","Walk your feet toward your hands by taking small steps — keep knees as straight as you can","Stand tall at the top and repeat — this dynamically stretches the hamstrings, calves, and shoulders simultaneously"]},
+  {name:"Standing Side Bend",dur:"30s each side",cues:["Stand tall with feet hip-width apart and raise one arm fully overhead","Lean smoothly to the opposite side — you are making a long arc, not collapsing","Keep both feet flat and your hips from shifting — the movement is purely through the torso","Feel the stretch from your hip all the way through your lat to your fingertips","This opens the lateral chain which fires hard during the golf downswing"]},
+],
+"Push":[
+  {name:"Thoracic Extension over Bench",dur:"90s",cues:["Sit on the floor in front of a bench and place your upper back (around the shoulder blade level) against the bench edge","Interlace your fingers behind your head and gently extend your upper back over the edge","Let gravity do the work — do not force it","Move the contact point slightly up and down the bench edge to find the tight segments","This is mandatory before heavy overhead pressing — a stiff thoracic spine transfers load directly to the shoulder joint"]},
+  {name:"Doorway Chest Stretch — 3 Angles",dur:"40s each position",cues:["Position 1: Arm high (above 90 degrees) — stretches the lower pec and the area under the armpit","Position 2: Arm at 90 degrees — stretches the mid pec and anterior deltoid","Position 3: Arm low (below 90 degrees) — stretches the upper pec and clavicular head","In every position, step forward, keep the shoulder blade DOWN, and breathe into it","All three positions hit different fiber orientations of the pec — all three are necessary before pressing"]},
+  {name:"External Rotation Warmup",dur:"15 reps each side",cues:["Hold a very light dumbbell (2–5 lbs) or use no weight","With your elbow bent at 90 degrees and pinned to your side, slowly rotate your forearm outward","Move through the full pain-free range — stop if you feel impingement or pinching","This directly warms up the infraspinatus and teres minor — the muscles that protect your shoulder during heavy pressing","Never skip this before any heavy press — it takes 60 seconds and prevents shoulder injuries"]},
+  {name:"Overhead Lat Reach",dur:"45s each side",cues:["Raise one arm fully overhead and grip a doorframe or wall for support if available","Lean into the stretch until you feel a deep pull from your armpit down to your hip","The lat (latissimus dorsi) is the largest muscle in your back and it directly limits how high you can raise your arms","Tight lats cause shoulder impingement during overhead pressing — stretch them thoroughly first","Hold and breathe — 5 deep breaths minimum each side"]},
+  {name:"Wrist Flexor and Extensor Stretch",dur:"30s each direction each hand",cues:["Extend one arm straight with palm facing UP — use other hand to gently press fingers toward floor — stretches the forearm flexors","Then turn palm facing DOWN — press fingers upward — stretches the extensor tendons","Heavy pressing with tight wrists causes elbow pain (golfer's elbow and tennis elbow) over time","Do both directions on both hands before every pressing session","Hold each position steady for the full 30 seconds — do not bounce"]},
+  {name:"Scapular Wall Slides",dur:"12 reps",cues:["Back flat against the wall, arms at 90/90 (like a goalpost), everything in contact with the wall","Slowly slide arms overhead while maintaining all contact points","Most people lose contact with the wall around the 120-degree mark — that is your mobility ceiling","Work within your current range and it will expand over weeks","Activates the lower trap and serratus anterior which are critical stabilizers during all pressing movements"]},
+],
+"Pull":[
+  {name:"Child's Pose with Lat Reach",dur:"60s each side",cues:["Start in child's pose — hips back toward heels, arms extended, forehead toward floor","Walk both hands to the right and hold — feel the left lat (from armpit to hip) stretch deeply","Breathe into the left side of your ribcage to deepen the stretch further","The lat connects your shoulder to your hip — if it is tight, your row mechanics suffer and your shoulder internally rotates","After 60 seconds, walk hands to the left and repeat"]},
+  {name:"Thread the Needle",dur:"60s each side",cues:["Start on all fours in a tabletop position","Slide one arm under your body along the floor — rotating your upper back to follow it","Let your shoulder and the side of your head rest on the floor","Use your top hand to brace against the floor and create gentle overpressure into the rotation","This is one of the best thoracic rotation stretches available — it also opens the posterior shoulder capsule"]},
+  {name:"Scapular Wall Slides",dur:"12 reps",cues:["Back and both arms flat against the wall in goalpost position","Slide arms overhead — keeping contact at the wrist, elbow, and upper back throughout","This activates the lower trapezius which is essential for proper row mechanics — most people have a weak lower trap","If your arms lose wall contact below 120 degrees you have significant lat or pec minor tightness","Do this slowly — 3 seconds up, 3 seconds down"]},
+  {name:"Bicep Wall Stretch",dur:"40s each side",cues:["Stand beside a wall and place your palm flat on it at shoulder height with fingers pointing behind you","Turn your body away from the wall while keeping the palm in contact — you will feel the stretch in the bicep and front of the shoulder","Do not hyperextend your elbow — keep a very soft bend","This stretches the bicep tendon at the shoulder insertion — chronically tight in people who row and curl frequently","Essential before heavy rowing to prevent bicipital tendinitis"]},
+  {name:"Levator Scapulae Stretch",dur:"50s each side",cues:["Sit tall and turn your head to a 45-degree angle (looking toward your armpit)","Tuck your chin and gently pull your head downward with the same-side hand","You will feel the stretch from the base of your skull down to the top of your shoulder blade","The levator scapulae runs from your cervical spine to your scapula — when tight it causes neck pain and limits head rotation","Breathe slowly — this is one of the most commonly tight muscles in the body"]},
+  {name:"Doorway Chest Opener",dur:"60s",cues:["Arms at 90 degrees on the doorframe, chest up, step one foot forward","This opens the anterior shoulder — critical when you spend a lot of time in a rowing/pulling position","Keeps the chest from becoming the dominant pulling muscle instead of the back","Hold and breathe — 5 deep inhales filling the chest completely","Both shoulders should feel even — if one side is much tighter, give it extra time"]},
+],
+"Lower Body B":[
+  {name:"Hip Flexor Lunge + Rotation",dur:"60s each side",cues:["Set up in a low lunge with back knee down, front foot forward","Once settled, add a thoracic rotation toward the front leg — reach the same-side arm as your front foot toward the ceiling","This combines hip flexor stretching with spinal rotation in a way that directly mimics the golf backswing position","Switch sides and ensure both hips receive equal attention","The hip flexors shorten with sitting — this is often the single most important stretch for people who work at a desk"]},
+  {name:"Cossack Squat Hold",dur:"50s each side",cues:["Feet wide, toes slightly out, shift weight deep into one side bending that knee fully","The opposite leg is straight with heel flat or slightly raised","Keep your chest as tall as possible — collapsing forward reduces the hip benefit","This opens the hip capsule, adductor, and groin simultaneously — all of which limit lower body strength and golf hip rotation","If you cannot keep your chest up, elevate your heels slightly on plates or weight"]},
+  {name:"Single-Leg Glute Bridge",dur:"12 reps each side",cues:["Lie on your back with both knees bent and feet flat","Extend one leg straight and drive the other foot into the floor to raise your hips","The hip of the extended leg must stay level — if it drops, your glute is not firing","Squeeze hard at the top for 2 seconds before lowering slowly","This activates the glute medius and maximus specifically on the working side — essential before split squats and RDLs"]},
+  {name:"Ankle Dorsiflexion Stretch",dur:"45s each side",cues:["Stand facing a wall and place one foot about 3 inches from the base","Push your knee forward toward the wall while keeping your heel completely flat on the floor","If your heel rises before your knee touches the wall, move your foot closer and work from there","Poor ankle dorsiflexion is the most common reason for knee dive, forward lean, and limited squat depth","Stretch this daily — it responds well to consistent work"]},
+  {name:"Adductor Stretch (Sumo Hold)",dur:"50s",cues:["Wide stance, toes out, lower into a deep squat and rest elbows on inner knees","Use your elbows to press your knees outward — this opens the hip capsule and adductors","Chest up, spine neutral — you are not folding forward, you are sitting into the position","The inner thigh muscles (adductors) are frequently undertrained and understretched","They are critically important in the golf swing for controlling hip rotation on the downswing"]},
+  {name:"Hamstring Standing Fold",dur:"45s each side",cues:["Hinge forward at the hips with a flat back until you feel hamstring tension","Stop there — do not round your spine to reach further","Slightly shift your weight to one foot to isolate that hamstring — hold, then shift to the other","Hamstrings limit both deadlift depth and golf hip hinge mechanics","Consistent stretching here directly improves RDL depth and swing follow-through"]},
+],
+"Upper Body B":[
+  {name:"Sleeper Stretch",dur:"50s each side",cues:["Lie on your side on the mat with the bottom arm extended straight out at shoulder height","Bend the bottom elbow to 90 degrees so your forearm points toward the ceiling","Use your top hand to gently press the bottom forearm toward the floor","You will feel a deep stretch in the posterior shoulder capsule","This is one of the most important shoulder stretches for anyone who presses — tightness here causes rotator cuff impingement under load"]},
+  {name:"Overhead Tricep Stretch",dur:"40s each side",cues:["Raise one arm overhead and bend the elbow so your hand reaches toward the middle of your upper back","Use the opposite hand to gently press the elbow inward and downward","You will feel the stretch deep in the back of the upper arm and into the shoulder","The long head of the tricep crosses the shoulder joint — stretching it improves overhead mobility","Hold steady — do not force the elbow aggressively"]},
+  {name:"Doorway Chest Opener",dur:"50s",cues:["Arms at 90 degrees on the doorframe, step through until you feel tension across the chest","Keep both shoulder blades pulled DOWN and back — do not let the shoulders round forward","Breathe deeply — five full breaths expanding your chest completely","Tight pecs limit scapular retraction, which is required for proper row mechanics","This also keeps the anterior shoulder healthy for repeated Arnold press and overhead work"]},
+  {name:"Cross-Body Shoulder Stretch",dur:"40s each side",cues:["Arm straight across the chest, opposite hand pulling gently","Shoulder of the stretching arm pressed firmly DOWN","Turn your head away from the stretching arm to increase the posterior delt and capsule stretch","Hold steadily — this targets the rear deltoid and external rotators","These are typically the weakest and tightest part of the shoulder in most people"]},
+  {name:"Neck Side Tilt",dur:"40s each side",cues:["Sit tall and tilt your ear toward your shoulder — do not lift the shoulder toward the ear","Place the same-side hand gently on top of your head and let its weight add gentle overpressure — do not pull","You will feel the stretch from the side of your neck down into the top of the trap","The upper trapezius is chronically tight in virtually everyone who works at a desk or spends time looking at a phone","Release this before any upper body session to improve scapular mechanics"]},
+  {name:"Wrist Circles and Flexor Stretch",dur:"30s total",cues:["10 slow circles in each direction with each wrist before any stretching","Then extend arm, palm up, and gently press fingers down — hold 20 seconds","Switch to palm down, press fingers up — hold 20 seconds","The wrist is under load during every curl and pressing movement — warm the joint before loading it","If you feel clicking or grinding during circles, move more slowly and work through the full range"]},
+],
+"Active Recovery":[
+  {name:"Supine Knee-to-Chest",dur:"60s each side",cues:["Lie on your back and draw one knee toward your chest with both hands","Keep the other leg flat on the floor and actively press it into the mat","This decompresses the lower lumbar spine and stretches the glute and hip rotators","Breathe deeply — on each exhale try to draw the knee slightly closer","This is always the first movement on recovery days — start gentle and let the body settle"]},
+  {name:"Happy Baby Pose",dur:"90s",cues:["Lie on your back, bend both knees and grab the outside edges of your feet","Draw your knees toward the floor on the outside of your torso","Keep your lower back flat against the floor — do not let it arch","This opens the inner hip, groin, and sacrum simultaneously","Rock gently side to side if it feels good — this massages the lower back against the floor"]},
+  {name:"Neck Rolls (slow)",dur:"5 each direction",cues:["Sit tall and let your chin drop slowly toward your chest","Roll your head to one side, bringing the ear toward the shoulder","Continue to roll backward so you are looking at the ceiling — move slowly","Do not crunch the neck backward aggressively — keep the movement fluid and controlled","These are exploratory — notice where the movement feels sticky or tight and slow down in those areas"]},
+  {name:"Full Body Cat-Cow",dur:"2 min",cues:["On all fours — move slowly through the full cow (belly drop, head up) to cat (spine round, chin to chest) cycle","3 full seconds in each direction — do not rush","Add side-to-side undulation if it feels natural — let the spine move in all planes","This is the baseline movement for spinal health — it lubricates every disc and vertebral joint","On recovery days, spend extra time in the positions that feel most restricted"]},
+  {name:"Thoracic Rotation with Reach",dur:"60s each side",cues:["Sit cross-legged on the mat, hands behind head","Rotate fully to one side and hold for 5 breaths — then try to rotate one more degree on the exhale","The thoracic spine (mid-back) is the primary site of rotation in the golf swing","Most people have severely limited thoracic rotation from sitting — this is the movement to prioritize on recovery days","Add a sidebend at the end of the rotation to further open the lateral chain"]},
+],
+"Heavy Push":[
+  {name:"Thoracic Extension over Bench",dur:"90s",cues:["Sit with your upper back at the bench edge — find the spot between the shoulder blades","Interlace fingers behind your head and let gravity extend your upper back over the edge","Do not force — let the weight of your arms and head do the work over 90 seconds","Move slightly up and down the bench edge to mobilize multiple thoracic segments","A stiff thoracic spine causes the shoulder to compensate during heavy pressing — this must be done before every heavy push session"]},
+  {name:"Doorway Chest Stretch — All 3 Angles",dur:"40s each position",cues:["High arm: stretches the lower pec and the area closest to the armpit","Mid arm (90 degrees): stretches the sternal head of the pec major and anterior delt","Low arm: stretches the upper pec and the clavicular head","In every position keep the shoulder blade pinched back and down","Spend extra time on whichever position feels tightest"]},
+  {name:"External Rotation Warmup",dur:"15 reps each side",cues:["Light or no weight — elbow at 90 degrees pinned to your side","Slowly rotate the forearm outward away from your body through the full range","Move deliberately — this is a warmup for the rotator cuff, not a strength exercise","The external rotators (infraspinatus and teres minor) decelerate every pressing movement and protect the shoulder joint","If you feel clicking or pinching, slow down and stay in the pain-free range"]},
+  {name:"Overhead Lat Reach",dur:"50s each side",cues:["Raise one arm overhead and grab a doorframe or anchor point","Lean away from the anchor until you feel a deep stretch from armpit to hip","Tight lats pull the shoulder blade forward and down — they contribute directly to poor pressing mechanics","5 deep breaths minimum — let the rib cage expand into the stretch on each inhale","Both sides — do not skip the non-dominant side"]},
+  {name:"Wrist and Forearm Prep",dur:"30s each direction each hand",cues:["Palm up — press fingers toward the floor — holds for flexor tendons","Palm down — press fingers upward — hits the extensor tendons","Wrist circles — 10 each direction — lubricates the joint before max loads","Heavy pressing with tight wrists causes inflammation at the elbow over time","These take 2 minutes — do not skip before a 5-set heavy press day"]},
+  {name:"Scapular Wall Slides",dur:"15 reps",cues:["Back and arms against the wall — goalpost position — press everything into the wall","Slide arms overhead maintaining all contact — wrists, elbows, upper back","Lower trap and serratus must be active before any pressing — these muscles prevent shoulder impingement","Work your maximum range and note where you lose contact — that is your mobility limit to address over time","Do not rush these — 3 seconds up, pause at top, 3 seconds down"]},
+],
+"Heavy Pull":[
+  {name:"Child's Pose with Lat Reach",dur:"60s each side",cues:["Hips back toward heels, walk hands to one side, forehead toward the floor","Breathe into the side that is stretching — fill the back of that ribcage with air","The lat (from armpit to hip) is the primary mover in rowing — stretch it fully before heavy rows","Tight lats cause the elbow to flare and the shoulder to internally rotate during rows — both reduce power and increase injury risk","Hold a full 60 seconds each side — do not rush this one"]},
+  {name:"Thread the Needle",dur:"60s each side",cues:["Tabletop position — thread one arm along the floor beneath your torso","Let your shoulder and the side of your head rest on the floor","Use the top hand to gently press the floor and deepen the rotation","This mobilizes the thoracic spine and opens the posterior shoulder simultaneously","Before heavy rows, this allows the scapula to move freely through its full range"]},
+  {name:"Bicep Wall Stretch",dur:"45s each side",cues:["Palm flat on the wall behind you at shoulder height, fingers pointing back","Rotate your chest away from the wall — keep the palm in contact throughout","You will feel the stretch in the bicep and the front of the shoulder (anterior deltoid)","Heavy rowing compresses the bicep tendon at the shoulder — this stretch counteracts that compression","If you feel sharp pain (not stretch discomfort), reduce the angle immediately"]},
+  {name:"Levator Scapulae Stretch",dur:"50s each side",cues:["Head turned 45 degrees toward your armpit, chin tucked, same-side hand on top of head","Let the weight of your hand create gentle downward pressure — do not pull aggressively","Stretch goes from base of skull to the top of the shoulder blade","This is the muscle that makes your neck feel locked — tight in virtually every desk worker","Release it before pulling movements to improve head position and reduce neck tension during heavy sets"]},
+  {name:"Scapular Retractions",dur:"15 reps",cues:["Stand tall with arms at your sides","Squeeze your shoulder blades together and downward — hold for 2 seconds — release fully","This activates the lower trapezius and rhomboids before you row","Most people lead with their upper trap and bicep in rows because the lower trap is dormant","These contractions wake the lower trap up and establish the correct motor pattern before loading"]},
+  {name:"Face Pull Warmup (band or towel)",dur:"15 reps",cues:["Anchor a towel or band at face height — grip with both hands","Pull toward your face keeping elbows HIGH and out to the sides","At the end of the movement, externally rotate so thumbs point behind you","This is both a warmup and a corrective exercise — it targets the rear delts and external rotators","These muscles are undertrained in virtually everyone and are critical for shoulder health under load"]},
+],
+"Heavy Lower":[
+  {name:"Hip Flexor Lunge + Rotation",dur:"70s each side",cues:["Low lunge, back knee down, front shin vertical","Add thoracic rotation toward the front knee — reach the arm toward the ceiling and follow it with your eyes","The combination of hip flexor length and thoracic rotation is the exact movement pattern of the golf backswing","Before heavy deadlifts and squats, releasing the hip flexors allows the pelvis to posteriorly tilt correctly under load","This is the single most important stretch before any heavy lower body session"]},
+  {name:"Cossack Squat Hold",dur:"50s each side",cues:["Wide stance, deep into one side with full knee bend","Keep the chest as tall as possible — collapse means the hip is not getting the stretch","The adductors must lengthen for the hips to externally rotate properly under a loaded squat","Before Bulgarian split squats especially — the hip capsule must be prepared for the extreme range of motion","Both sides — do not rush through the non-dominant side"]},
+  {name:"Single-Leg Glute Bridge",dur:"15 reps each side",cues:["Lie on back, one leg extended straight, other foot flat on floor","Drive through the planted heel to raise hips — keep the extended leg in line with your torso","The hip of the extended leg must stay LEVEL — if it drops, shift focus to holding it up","Two second hold at the top — feel the glute of the working leg","This specifically activates the glute medius which controls pelvic stability during single-leg movements like the Bulgarian split squat"]},
+  {name:"Thoracic Rotation (seated)",dur:"45s each side",cues:["Sit on bench edge, hands behind head, hips square and still","Rotate upper body maximally to one side — hold and breathe","A stiff thoracic spine causes the lumbar spine to compensate during heavy bilateral lifting — this is a major cause of lower back pain","Rotate as far as your thoracic spine allows — not your lumbar","Hold for 5 full breaths before switching sides"]},
+  {name:"Ankle Dorsiflexion Stretch",dur:"50s each side",cues:["Foot at wall base, push knee forward toward wall keeping heel flat","Limited ankle mobility causes the heel to rise during squatting — shifting load to the lower back and knees","Test both sides and spend extra time on the tighter one","Before heavy deadlifts, this also improves your starting position and initial pull angle","Consistent daily work here produces significant improvement within 4–6 weeks"]},
+  {name:"Hip 90/90 Rotation",dur:"60s each side",cues:["Sit with one leg in front at 90 degrees and one to the side at 90 degrees","Sit tall — both sitting bones reaching toward the floor","This addresses hip internal rotation (front leg) and external rotation (rear leg) simultaneously","Hip rotation is the power source of the golf swing — limited rotation means the arms and back compensate","Spend equal time on both sides — most people find one side dramatically tighter"]},
+],
+"Hypertrophy Upper":[
+  {name:"Doorway Chest Stretch",dur:"50s each side",cues:["Mid-arm position (90 degrees) — step through until you feel tension across the chest","Keep the shoulder blade pulled back and down throughout","Before hypertrophy bench work, this ensures the pec is lengthened and ready to contract through full range","A pre-stretched muscle produces more force — this is not just injury prevention, it is performance","Breathe deeply — 5 inhales expanding the chest fully"]},
+  {name:"Overhead Lat Reach",dur:"40s each side",cues:["Arm overhead, grab a doorframe, lean away","Feel the stretch from the armpit to the hip — this is the lat","Tight lats limit how far the arm can lower on the eccentric of a row — this costs you range of motion and muscle stimulus","Full lat stretch before rows means deeper eccentric and more muscle fiber recruitment","Hold 5 full breaths each side"]},
+  {name:"Sleeper Stretch",dur:"45s each side",cues:["Lie on your side, bottom arm at 90 degrees, top hand pressing bottom forearm toward the floor","Feel the stretch in the back of the shoulder — not on top, not in front","This is the posterior capsule stretch — tight posterior capsule is the most common cause of shoulder impingement under load","If this position is uncomfortable, reduce the pressure and work within a tolerable range","Do this before every upper body session — it takes 90 seconds and protects your shoulder long-term"]},
+  {name:"Bicep Wall Stretch",dur:"35s each side",cues:["Palm on wall behind you at shoulder height, rotate chest away","The bicep crosses two joints — the elbow and the shoulder — and must be stretched at both","This stretch targets the shoulder end of the bicep which is compressed during heavy pressing","Do this before incline curls especially — the stretch position of incline curls already places the bicep in a vulnerable position","Hold steadily — do not force or bounce"]},
+  {name:"Thoracic Rotation",dur:"40s each side",cues:["Seated, hands behind head, rotate upper body fully to one side","Hold for 5 breaths and attempt to rotate one additional degree on each exhale","Thoracic stiffness causes the shoulder to rotate to compensate — this leads to impingement over time","On hypertrophy days, maintaining thoracic mobility ensures you can reach end ranges on every pressing and rowing movement","Both sides — note which is tighter and give it extra time"]},
+],
+"Hypertrophy Lower":[
+  {name:"Hip Flexor Lunge Stretch",dur:"60s each side",cues:["Low lunge with back knee down, front shin vertical, pelvis tucked slightly under","The psoas originates at the lumbar spine — when it is tight it pulls the lower back into extension under load","This is especially important before squat volume where the hip flexor tension creates anterior pelvic tilt and lower back compression","Hold and breathe into the front of the hip — with each exhale try to sink slightly deeper","This is the most important stretch before any lower body hypertrophy session"]},
+  {name:"Adductor Sumo Hold",dur:"55s",cues:["Wide stance, toes out, lower into a deep squat, elbows on inner knees","Use elbows to press knees further out — feel the inner thigh stretch","The adductors are the most undertrained and understretched muscle group in most people's programs","Before sumo squats especially — these muscles must be lengthened to allow full depth with the wide stance","Chest up, spine neutral, breathe into the inner thighs"]},
+  {name:"Glute Activation",dur:"15 reps each side",cues:["Single-leg glute bridge on the mat — extend one leg, drive through the planted heel","Two second hold at the top — confirm the glute is firing, not the hamstring","The glute should feel the work — if your hamstring cramps, slide your foot further from your hips","Hypertrophy lower days include multiple glute-dominant movements — wake the muscle up before loading it","Both sides — note if one glute is weaker and give it extra attention"]},
+  {name:"Hamstring Fold",dur:"45s each side",cues:["Stand and hinge forward with a flat back until you feel hamstring tension","Stop when your back starts to round — you have found your current hamstring length","Slight bend in one knee to shift load to the opposite hamstring — hold, then switch","Hamstrings that are not pre-stretched produce less force during leg curls and RDLs","Consistent stretching adds length that directly improves both aesthetic development and golf follow-through"]},
+  {name:"Ankle Circles",dur:"30s each foot",cues:["10 slow circles in each direction — move through the full range","Then 10 dorsiflexion pumps — pull the toes toward you firmly and release","Ankle mobility affects everything above it — limited ankles change squat mechanics, lunge mechanics, and calf development","On high-volume lower body days the ankle takes significant repetitive load — prepare the joint","If you notice one ankle is significantly stiffer, add wall dorsiflexion stretches for that side"]},
+  {name:"Cossack Squat Hold",dur:"45s each side",cues:["Wide stance, shift deep into one side with full knee bend, opposite leg straight","Chest tall — if you collapse forward, the hip is not receiving the full benefit","The adductors must be open before sumo squats and walking lunges to prevent groin strain","This position also opens the hip capsule which improves the bottom position of every lower body movement","Both sides — hold steadily and breathe through the tightness"]},
+],
+};
+
+// ── COOLDOWN DATA ──────────────────────────────────────────────────
+const NECK=[
+  {name:"Chin Tuck (Cervical Retraction)",dur:"10 reps, 5s hold each",cues:["Sit or stand tall with your spine long — do not slouch into this stretch","Draw your chin straight back as if making a double chin — not down, BACK","Hold for 5 full seconds — feel the muscles at the base of the skull working","This directly counteracts forward head posture from desk work and phone use","Do this every single day — it takes 2 minutes and is the highest return stretch in this program"]},
+  {name:"Neck Side Tilt",dur:"60s each side",cues:["Sit tall and let your ear drop toward your shoulder — do not raise the shoulder","Place the same-side hand gently on your head and let its weight provide gentle overpressure","You will feel the stretch from the side of your neck through the upper trapezius","Do not pull aggressively — the neck responds to gentle sustained pressure, not force","After 60 seconds, slowly return to center before switching sides"]},
+  {name:"Neck Rotation",dur:"45s each side",cues:["Sit tall and slowly turn your head to look over one shoulder","Keep your chin level — do not let it drop or rise as you rotate","Stop at your comfortable end range — do not force beyond it","Breathe slowly and hold — the range will gradually increase over 45 seconds","Tight neck rotators restrict the follow-through head movement in the golf swing"]},
+  {name:"Neck Flexion and Extension",dur:"30s each direction",cues:["Flexion: slowly lower your chin toward your chest — feel the stretch up the back of the neck","Hold at the bottom for 30 seconds — breathe into the stretch","Extension: slowly look upward toward the ceiling — do not crank aggressively","Hold gently at your end range — 30 seconds","Both directions are important — most people only address one"]},
+  {name:"Upper Trap Fingertip Release",dur:"60s each side",cues:["Reach across with the opposite hand and place fingertips on top of the trap muscle (the ridge from your neck to your shoulder)","Apply gentle sustained pressure and simultaneously tilt your head away from that side","Breathe slowly — you are using a combination of pressure and stretch to release the muscle","Do not dig aggressively — sustained moderate pressure is more effective than intense pressing","The upper trap is one of the most chronically overloaded muscles in people who sit at a desk"]},
+  {name:"Levator Scapulae Stretch",dur:"60s each side",cues:["Sit tall and turn your head 45 degrees toward your armpit","Tuck your chin and use the same-side hand to provide gentle downward pressure on the back of your head","You will feel the stretch from the base of the skull to the top of the shoulder blade","The levator scapulae is almost universally tight — it connects the cervical vertebrae to the top of the scapula","Release it at the end of every upper body session to restore full head rotation range"]},
+];
+const SHOULDER=[
+  {name:"Thread the Needle",dur:"90s each side",cues:["All fours, thread one arm under the torso along the floor, shoulder and side of head resting down","Use the top hand to brace and create gentle additional rotation","Feel the stretch in the posterior shoulder and through the mid back","This is one of the best combined thoracic rotation and posterior shoulder stretches available","Hold for the full 90 seconds — this tissue responds to sustained gentle loading"]},
+  {name:"Cross-Body Shoulder Stretch",dur:"60s each side",cues:["Arm straight across the chest, opposite hand providing gentle pull","The shoulder of the stretching arm must stay DOWN — this is the most commonly missed cue","Turn your head away from the stretching arm to add a mild cervical component","You are stretching the posterior deltoid and posterior capsule — both commonly tight in people who press","Full 60 seconds — this muscle does not respond well to brief stretching"]},
+  {name:"Overhead Tricep and Lat Stretch",dur:"60s each side",cues:["Raise one arm overhead, bend the elbow, reach toward the upper back","Use the opposite hand to press the elbow gently inward and downward","Feel the stretch deep in the back of the arm and into the shoulder","The long head of the tricep originates at the shoulder blade — it limits both shoulder and elbow mobility when tight","After 30 seconds, add a slight lateral lean away to incorporate the lat simultaneously"]},
+  {name:"Sleeper Stretch",dur:"60s each side",cues:["Lie on your side, bottom arm extended at shoulder height, elbow bent 90 degrees forearm pointing up","Use the top hand to gently press the bottom forearm toward the floor","Feel the stretch deep inside the posterior shoulder — not on top","This is the most targeted stretch for the posterior shoulder capsule — tightness here causes impingement during pressing","If it feels very intense, reduce pressure — this should be a deep held stretch, not painful"]},
+  {name:"Doorway Pec Stretch (3 positions)",dur:"45s each position",cues:["Position 1 — arm HIGH: feel the stretch near the armpit and lower pec","Position 2 — arm at 90 degrees: feel the stretch across the mid chest and into the anterior delt","Position 3 — arm LOW: feel the stretch in the upper pec near the collarbone","In all three positions, keep the shoulder blade pulled back and down","All three fiber orientations of the pec must be addressed — doing only one position leaves the others tight"]},
+  {name:"Wall Angels",dur:"10 slow reps",cues:["Back flat against the wall, arms in goalpost position (90/90), everything in contact","Slowly slide arms overhead — maintain contact at wrists, elbows, and upper back","Where contact breaks is your mobility limit — work within it and it will improve","This activates the lower trapezius and serratus anterior while simultaneously stretching the pec and lat","3 seconds up, pause at top, 3 seconds down — treat these as a precision movement, not a warmup rush"]},
+  {name:"Prone Cobra",dur:"60s",cues:["Lie face down on the mat, arms at your sides, thumbs pointing upward","Squeeze your shoulder blades together and downward — then lift your chest off the floor","Hold — breathe — maintain the squeeze throughout","This directly counteracts the rounded forward posture of sitting — it is a postural corrective as much as a stretch","Feel the mid and upper back working — if you feel it in your lower back, reduce the lift height"]},
+  {name:"Child's Pose with Lat Reach",dur:"90s alternating sides",cues:["Hips back toward heels, walk both hands to one side and hold for 45 seconds","Breathe into the back of the stretching side — feel the ribcage expand laterally","The lat is the largest muscle in the body — it connects the upper arm to the pelvis","When tight, the lat limits overhead reach, internal shoulder rotation, and the follow-through of the golf swing","Walk hands to the other side and repeat — note which side is tighter"]},
+];
+const GOLF=[
+  {name:"Thoracic Rotation (seated cross-legged)",dur:"60s each side",cues:["Sit cross-legged on the mat, hands interlaced behind your head","Rotate your upper body as far as possible to one side — only the thoracic spine moves, not the pelvis","Hold at the end of range and breathe — with each exhale try to rotate slightly further","This is the primary movement of the golf backswing — every degree of additional thoracic rotation is a potential gain in swing arc","Both sides — note asymmetry and give extra attention to the tighter direction"]},
+  {name:"Bench Chest Opener",dur:"90s",cues:["Sit on the floor in front of the bench and drape your upper back over the bench edge","Arms can be crossed on your chest or extended overhead for more intensity","Let gravity extend your thoracic spine over the bench — do not force","Move slightly up and down the bench edge to mobilize multiple segments","This opens the chest and improves thoracic extension simultaneously — both are required for a full backswing"]},
+  {name:"Behind-Shoulder Towel Stretch",dur:"60s each side",cues:["Hold a towel vertically behind your back — top hand overhead gripping the towel, bottom hand reaching up from below","Use the top hand to gently pull the towel upward — this pulls the bottom arm into internal rotation and stretch","You will feel the stretch in the posterior shoulder and rotator cuff of the bottom arm","Switch hands so each arm gets both the overhead and the low position","This stretch addresses the shoulder positions required at the top of the backswing and at impact"]},
+  {name:"Seated Spinal Rotation (arms crossed)",dur:"90s each side",cues:["Sit on the bench edge, feet flat, arms crossed over your chest","Rotate your upper body fully to one side — hold at maximum range for the full 90 seconds","This mimics the backswing and follow-through positions directly — the range you build here is the range your swing will use","Do not let your hips rotate — the movement is purely thoracic","Both sides — most golfers find one direction significantly more restricted"]},
+  {name:"Hip Flexor Lunge with Rotation",dur:"60s each side",cues:["Low lunge with back knee down — add thoracic rotation toward the front leg","Reach the same arm as the front leg toward the ceiling and follow it with your gaze","This combines hip flexor length with spinal rotation — the exact demand of the golf swing transition","Tight hip flexors prevent the pelvis from rotating freely in the downswing — releasing them adds club head speed","Both sides — spend extra time on the lead side (left side for right-handed golfers)"]},
+  {name:"Lateral Flexion (standing side bend)",dur:"45s each side",cues:["Stand tall and raise one arm fully overhead — lean smoothly to the opposite side","Feel the stretch from your hip crest through the entire lat to your fingertips","The QL (quadratus lumborum) and lat both fire during the golf downswing — keep them supple","Keep both feet flat and hips even — do not let the hip pop out to the side","Breathe into the stretching side — 5 full breaths"]},
+  {name:"Wrist Flexor and Extensor Stretch",dur:"30s each direction per hand",cues:["Arm extended palm UP — opposite hand presses fingers toward floor — forearm flexors","Arm extended palm DOWN — opposite hand presses fingers upward — forearm extensors","The wrists are under significant load during every golf shot — the wrist hinge in the downswing demands flexibility","Tight forearm flexors lead to early wrist release (casting) — one of the most common golf swing faults","Do both directions on both hands — right and left wrists often differ significantly"]},
+  {name:"Figure-4 Glute Stretch",dur:"90s each side",cues:["Lie on your back with both knees bent — cross one ankle over the opposite knee","Flex the foot of the crossed leg to protect the knee","Draw both legs toward your chest — feel the deep glute stretch in the crossed leg","The external hip rotators (piriformis, gemelli, obturator) are essential for the follow-through rotation","Limited external rotation here means the hips cannot fully rotate through at impact — adding length here directly improves swing mechanics"]},
+];
+const LOWER_COOL={
+"Lower Body A":[
+  {name:"Pigeon Stretch",dur:"90s each side",cue:"Front shin angled across your body, back leg extended — let the hip drop toward the floor. Breathe into the outer hip and glute. Place a folded mat under the hip if it does not reach the floor."},
+  {name:"Hamstring Floor Stretch",dur:"60s each side",cue:"Lie on your back and extend one leg toward the ceiling. Hold the back of the thigh (not the knee) and gently draw it toward you. Keep the other leg flat on the floor actively pressing down."},
+  {name:"Hip Flexor Lunge Stretch",dur:"60s each side",cue:"Back knee on floor, front foot forward, tuck pelvis under. Reach the same-side arm overhead for an added lateral component. Breathe into the front of the hip."},
+  {name:"Cossack Squat Hold",dur:"45s each side",cue:"Wide stance, deep into one side. Chest up, breathe through the inner thigh. This is the active recovery version — hold steady and let the muscle lengthen."},
+],
+"Lower Body B":[
+  {name:"Pigeon Stretch",dur:"90s each side",cue:"Settle into pigeon — relax completely. Use your breath to release tension. Do not actively push into the position."},
+  {name:"90/90 Hip Stretch",dur:"90s each side",cue:"One leg in front at 90 degrees, one to the side at 90 degrees. Sit tall — both sit bones toward the floor. This hits internal and external hip rotation simultaneously."},
+  {name:"Quad Standing Stretch",dur:"45s each side",cue:"Stand on one leg, bend the other knee and hold the ankle behind you. Keep the knees together. Tuck the pelvis slightly to deepen the hip flexor component. Hold a wall if needed for balance."},
+  {name:"Seated Hamstring Stretch",dur:"60s each side",cue:"Sit on the floor with one leg extended, one bent. Hinge forward at the hips toward the extended leg with a FLAT back. Stop when the back starts to round — that is your limit today."},
+],
+"Heavy Lower":[
+  {name:"Pigeon Stretch",dur:"2 min each side",cue:"After heavy lower body work, spend extra time here. Two full minutes each side. Let the body fully decompress. Close your eyes and breathe."},
+  {name:"Hip Flexor Couch Stretch",dur:"90s each side",cue:"Back foot on the bench behind you, front foot on the floor. Tuck your pelvis under and bring your torso upright. This is a deep hip flexor and quad stretch — the most important cooldown stretch after heavy squats and deadlifts."},
+  {name:"Hamstring Towel Stretch",dur:"60s each side",cue:"Lie on your back, loop a towel around one foot, and draw the leg toward you while keeping the knee straight. The other leg presses flat into the floor. Go to where you feel a strong pull — not pain."},
+  {name:"90/90 Hip Capsule Stretch",dur:"90s each side",cue:"Both legs at 90 degrees — front and side. Sit as tall as possible. Heavy deadlifts and squats compress the hip capsule — this position decompresses both the internal and external rotators simultaneously."},
+],
+"Hypertrophy Lower":[
+  {name:"Pigeon Stretch",dur:"90s each side",cue:"Full pigeon — relax completely. After high-rep lower body work the hip rotators are fatigued and benefit from sustained passive stretching."},
+  {name:"Figure-4 Glute Stretch",dur:"90s each side",cue:"On your back, ankle over opposite knee, draw both legs toward chest. This targets the deep external hip rotators — piriformis especially — which fatigue significantly during lunge and squat volume."},
+  {name:"Cossack Hold",dur:"60s each side",cue:"Wide stance, deep into one side. After walking lunges and sumo squats, the adductors need sustained lengthening. Hold steadily and breathe through the inner thigh."},
+  {name:"Hamstring and Hip Flexor Combo",dur:"60s each side",cue:"Standing: hinge forward for hamstring stretch (20s), then step back into lunge for hip flexor stretch (20s), then add thoracic rotation for combined benefit (20s). One flowing sequence each side."},
+],
+};
+const REST_STRETCH=[
+  {name:"Chin Tuck (Cervical Retraction)",dur:"10 reps, 5s hold",cue:"The daily non-negotiable. Draw chin straight back — not down — and hold for 5 seconds. This resets the cervical spine from forward head posture. Do this before anything else, every rest day, always."},
+  {name:"Neck Side Tilt",dur:"60s each side",cue:"Ear toward shoulder, hand on top of head for gentle weight-only overpressure. Do not actively pull. 60 full seconds each side — the neck releases slowly."},
+  {name:"Levator Scapulae Stretch",dur:"60s each side",cue:"Head at 45 degrees toward armpit, chin tucked, gentle downward pressure from same-side hand. One of the most universally tight muscles in people who use computers or phones."},
+  {name:"Thoracic Rotation (seated)",dur:"60s each side",cue:"Sit tall, hands behind head, rotate fully to one side, breathe and hold. Attempt to increase rotation with each exhale. This is the motion of the golf backswing — maintain it on rest days."},
+  {name:"Thread the Needle",dur:"60s each side",cue:"Tabletop, thread one arm under, shoulder to the floor. The posterior shoulder and thoracic spine release together. Hold the full 60 seconds — do not rush."},
+  {name:"Child's Pose with Lat Reach",dur:"60s each side",cue:"Walk hands to one side in child's pose. Breathe into the stretching side. The lat connects the shoulder to the pelvis — keep it long on rest days."},
+  {name:"Hip Flexor Lunge Stretch",dur:"60s each side",cue:"Back knee down, pelvis tucked under, front shin vertical. The psoas shortens with sitting — every rest day is an opportunity to undo that."},
+  {name:"Figure-4 Glute Stretch",dur:"90s each side",cue:"On your back, ankle over opposite knee, draw both legs toward chest. External hip rotation is the foundation of the golf follow-through — stretch it on rest days too."},
+  {name:"Prone Cobra",dur:"60s",cue:"Face down, thumbs up, lift chest, pinch shoulder blades. Every rest day — this directly undoes the forward rounding that accumulates from sitting, driving, and looking at screens."},
+  {name:"Box Breathing",dur:"5 min",cue:"4 counts in — 4 counts hold — 4 counts out — 4 counts hold. This activates the parasympathetic nervous system and accelerates recovery. Do this last, lying flat on your back."},
+];
+
+// ── EXERCISE FORM CUES ─────────────────────────────────────────────
+const EX_CUES={
+"Dumbbell Bench Press":["Set up with feet flat on the floor and a natural arch in your lower back — do not flatten the back into the bench","Hold the dumbbells at the sides of your chest with elbows at roughly 45 degrees from your torso — not flared out wide","Lower the dumbbells with a 3-second count — feel the chest stretch at the bottom — pause briefly before pressing","Press upward and very slightly inward — the dumbbells should travel in a slight arc, not straight up","Keep your shoulder blades pinched together and pressed into the bench throughout the entire set — this protects the shoulder joint"],
+"Dumbbell Row":["Plant your non-working hand and same-side knee on the bench — your back should be parallel to the floor","The dumbbell hangs straight down from the shoulder — full stretch at the bottom of each rep","Drive your elbow upward and back — think about pulling your elbow toward your back pocket, not lifting the dumbbell","At the top, your elbow should be above your torso — feel the lat and mid-back contracting, not the bicep","Lower the weight with control — 2-3 seconds down — do not just drop it back to the start"],
+"Goblet Squat":["Hold the dumbbell vertically at your chest with both hands cupping the top end — elbows pointing down","Feet shoulder-width apart with toes rotated out 15-20 degrees — find a stance that allows your knees to track over your toes","Keep your chest tall and proud throughout — any forward collapse means the weight is too heavy","Lower until the crease of your hip is at or below the level of your knee — no partial reps","Drive through your whole foot evenly on the way up — not just the heel or just the toes"],
+"Romanian Deadlift":["Stand with feet hip-width apart holding dumbbells in front of your thighs","Push your hips backward while maintaining a completely flat back — this is a HINGE, not a squat","The dumbbells travel close to your legs throughout — they should almost brush your shins","Stop your descent when you feel your hamstrings are fully loaded and your back is about to round — this is your range today","Drive your hips forward to stand — squeeze your glutes hard at the top — do not hyperextend your lower back"],
+"Dumbbell Overhead Press":["Hold dumbbells at shoulder height with palms facing forward and elbows just in front of your torso — not directly to the sides","Brace your core firmly before every rep — your lower back should not arch as you press","Press directly upward — at the top, your biceps should be close to or touching your ears","Lower with control — 2-second count — do not let the dumbbells drop","If pressing seated, use the bench back support only if shoulder stability is a concern — pressing without support builds more core engagement"],
+"Lateral Raise":["Start with a very slight hinge forward at the hips — about 10-15 degrees — this positions the deltoid for better recruitment","Arms slightly bent at the elbows throughout — do not straighten or bend more during the movement","Lead the movement with your elbows, not your wrists — imagine pouring water out of a pitcher at the top","Raise only to shoulder height — going higher recruits the trapezius and reduces deltoid stimulus","3-second descent every rep — the slow negative is where the growth stimulus is strongest"],
+"Dumbbell Curl":["Stand with dumbbells at your sides, palms facing inward (neutral grip) to start","As you curl upward, rotate your wrist so your palm faces the ceiling — this supination is what fully engages the bicep","Keep your upper arm completely still — the elbow is a fixed hinge — no swinging the shoulders forward","Squeeze hard at the top — pause for one second — then lower slowly with control over 2-3 seconds","Full extension at the bottom of every rep — do not stop short or you are cutting the range of motion and limiting muscle development"],
+"Skull Crushers":["Lie on the bench with dumbbells held directly above your chest, arms perpendicular to the floor","Bend only at the elbow — lower the dumbbells toward your forehead (or just past it) while keeping your upper arms completely vertical","Feel the stretch in the tricep at the bottom — pause there for a beat","Press back up to the start by straightening the elbows — upper arms do not move","Keep your elbows from flaring outward — they should track forward slightly but not rotate out wide"],
+"Incline Dumbbell Press":["Set the bench to 30-45 degrees — not too steep, or it becomes a shoulder press","The angle shifts the stimulus to the upper portion of the pec and the anterior deltoid","Elbows at about 45 degrees from your torso — not flared, not pinned","Lower the dumbbells to the upper chest — pause — press up and slightly together at the top","The upper chest is a frequently underdeveloped area — slow the eccentric down to 3 counts to maximize the stimulus here"],
+"Push-Up":["Hands just outside shoulder width with fingers pointing slightly outward — find the position where your wrists feel neutral","Your body is a perfectly rigid plank from head to heels — squeeze your glutes and quads to maintain this","Lower your chest to touch the floor — no partial reps — full range every time","Elbows travel at roughly 45 degrees from your body — not chicken-winged out wide","At the top, push through the floor and protract your shoulder blades forward — this final scapular motion is often missed but is critical for serratus anterior development"],
+"Plank":["Forearms flat on the floor, elbows directly under your shoulders — not too far forward","Your body is a rigid straight line from the crown of your head to your heels — no sagging hips, no piking upward","Simultaneously contract your glutes, press your forearms into the floor, and pull your navel toward your spine","Keep breathing — if you are holding your breath the core is not functioning optimally","If your form breaks, stop the set — a 20-second perfect plank is more valuable than a 60-second poor one"],
+"Dumbbell Deadlift":["Stand with dumbbells outside your feet — hinge at the hips to grip them with a flat back, chest up","Drive your feet into the floor — think of pushing the floor away from you rather than pulling the weight up","Hips and shoulders rise at exactly the same rate from the floor — if the hips rise first, the lower back takes over","At the top, drive the hips forward to reach full extension — squeeze the glutes — do not hyperextend the lower back","Lower with control on the way back down — do not just drop the weight"],
+"Hip Thrust":["Upper back rests on the bench edge at approximately your shoulder blade level — not at your neck","Feet flat on the floor, hip-width apart — position them so your shins are vertical at the top of the movement","Place the dumbbell across your hips — hold it steady with both hands throughout","Drive your hips upward explosively by squeezing your glutes hard — not by extending your lower back","At the top, your body forms a flat line from shoulders to knees — 2-second hold — then lower slowly with control"],
+"Bulgarian Split Squat":["Stand about 2-3 feet in front of the bench — the distance determines the quad vs glute emphasis","Rear foot rests on the bench — top of the foot on the bench surface, not the toes","Lower your rear knee toward the floor while keeping your torso as upright as possible","The front shin should remain roughly vertical throughout — if the knee shoots forward past the toes, your front foot needs to move further out","Drive through the heel of the front foot to return to standing — this is the hardest exercise in the lower body program — do not rush the progression"],
+"Arnold Press":["Start with dumbbells at chin height, palms facing toward YOU — this is the difference from a standard press","As you press upward, rotate the dumbbells so that at the top your palms face AWAY from you","The rotation adds the front and side deltoid to the movement compared to a standard press","Lower with the reverse rotation — back to palms facing you at the chin — slow and controlled","The full rotation is the point of this exercise — do not skip or abbreviate it"],
+"Reverse Fly":["Hinge forward at the hips to about 45 degrees — chest nearly parallel to the floor","Let the dumbbells hang straight down from your shoulders with a very slight bend in the elbows","Raise your arms out to the sides like wings — lead with your elbows, not your wrists","At the top, feel your shoulder blades squeeze together — that rear deltoid contraction is the goal","Lower slowly — 3 seconds down — do not just drop the arms back","Keep the movement strict — no swinging or using momentum from your torso"],
+"Hammer Curl":["Hold the dumbbells in a neutral grip — thumbs pointing up at all times throughout the movement","This neutral grip targets the brachialis (underneath the bicep) and the brachioradialis (forearm) in addition to the bicep","Keep your upper arm completely still — no swinging the shoulder forward to help the curl","Full extension at the bottom of every rep — do not curl from a half-extended starting position","You can alternate arms or curl both simultaneously — alternating allows stricter form"],
+"Walking Lunge":["Take a stride long enough that your front shin stays vertical when your rear knee is near the floor","Lower your rear knee toward the floor — it hovers but does not slam down","Keep your torso upright throughout — any forward lean shifts emphasis away from the glute","Drive through your front heel and the big toe to step forward into the next rep — do not push off the rear foot","Control the descent — do not drop into the lunge"],
+"Glute Bridge":["Lie on your back with knees bent and feet flat — heels should be close enough that you could touch them with your fingertips","Drive through your heels to raise your hips — the power source is your glutes, not your lower back","At the top, your body forms a straight line from shoulders to knees — hold for 2 seconds and squeeze hard","Lower with control — hips come all the way down before each new rep","If this feels too easy, place the dumbbell across your hips and hold it in place with both hands"],
+"Dead Bug":["Lie on your back and press your lower back COMPLETELY flat into the floor — this must be maintained throughout","Arms point toward the ceiling, knees bent at 90 degrees above your hips","Slowly lower your opposite arm and leg toward the floor simultaneously — keep the lower back flat","Return to center — do not let the lower back arch at any point — if it does, reduce the range of motion","This exercise teaches true core stability — it is more difficult than it appears when done correctly"],
+"Side Plank":["Elbow directly under your shoulder — not in front or behind","Stack your feet on top of each other or stagger them for more stability","Lift your hips off the floor until your body forms a straight diagonal line from head to feet","Do not let your hips sag toward the floor — actively pull them up with your oblique","Breathe steadily throughout — if your form breaks, lower to the knee and continue"],
+"Bird Dog":["Start in tabletop position — wrists under shoulders, knees under hips, back flat as a table","Extend your opposite arm and leg simultaneously — move SLOWLY, as if you are in water","No rotation in your pelvis — the hip of the extended leg must stay level with the other hip","Hold the extended position for 2 seconds before returning with control","If your back is rounding or your hips are rotating, slow down further — quality is everything here"],
+"Face Pull":["Anchor a towel or resistance band at face height — grip with both hands thumbs facing down","Pull toward your face with elbows HIGH and flared out to the sides — not low","At the end of the movement, rotate your hands so that your thumbs point BEHIND you — this external rotation is the key part of the exercise","Control the return — do not let it snap back","This exercise directly counteracts the internal rotation that heavy pressing creates — it is one of the most important exercises in this program for long-term shoulder health"],
+"Calf Raise":["Stand on the edge of the bench step or a raised surface with only the ball of your foot on the platform — heel hanging off freely","Lower your heel as far below the platform as possible — feel the full calf stretch — hold for one second","Rise to your absolute tip-toe maximum — hold for one second — then lower slowly","Do not bounce at the bottom — the full stretch is the point","Single-leg version: same cues, hold the bench lightly for balance only — do not use the hand to push yourself up"],
+"Overhead Tricep Extension":["Hold one dumbbell with both hands gripping the top end — arms extended overhead","Bend only at the elbows — lower the dumbbell behind your head until your elbows are fully bent","Keep your elbows pointing FORWARD — not flaring out to the sides","Press back up by straightening the elbows — the upper arms do not move","Feel the stretch in the back of the arm at the bottom — the long head of the tricep is getting a full stretch in this position"],
+"Seal Row":["Lie face down (prone) on the bench — your chest is at the edge and the dumbbells hang freely below","Row both dumbbells simultaneously — pull your elbows back and up","The bench eliminates any possibility of using your lower back or legs — this is a pure back exercise","Full hang at the bottom of every rep — do not short-circuit the range of motion","Feel the mid-back and lats contracting at the top — squeeze and hold for one second"],
+"Leg Curl":["Lie face down on the mat — the dumbbell is held between your feet or secured at the ankle","Your hips press into the mat and stay there throughout — if they rise, the weight is too heavy","Curl your heels toward your glutes — feel the hamstring contract","At the top, squeeze the hamstring for one second before lowering slowly","Full extension between each rep — the hamstring must fully lengthen before the next curl"],
+"Sumo Squat":["Feet 1.5 to 2 times shoulder-width apart with toes rotated outward significantly — 30-45 degrees","Hold one dumbbell vertically between your legs with both hands","Lower straight down — knees track over toes in the direction they are pointing — do not let them cave inward","Feel the inner thigh (adductors) and glutes working throughout the descent and ascent","Full depth — hip crease at or below knee — then drive upward by pushing the floor away"],
+"Single-Leg RDL":["Stand on one leg with a very soft bend in the knee — do not lock it out","Hinge forward at the hip — let the free leg extend behind you as a natural counterbalance","Keep your back flat and your hips SQUARE — the hip of the free leg must not rotate upward","Lower the dumbbell along your standing leg until you feel a strong hamstring stretch in the standing leg","Drive through the standing heel and squeeze the glute to return to standing — go slow, control is everything here"],
+"Close-Grip DB Press":["Hold two dumbbells with palms facing each other — press them together lightly throughout the movement","Lower the dumbbells to your chest with elbows close to your ribcage — not flared out","Press back up — the dumbbells stay touching or nearly touching throughout","This is a tricep-dominant pressing movement — feel the back of your arms working, not your chest","Keep the tension on the triceps throughout by not fully locking out at the top"],
+"Incline Dumbbell Curl":["Set the bench to 45-60 degrees and sit back fully — your arms should hang freely behind the plane of your torso","This is the key position — the arms hanging back behind you creates a full stretch of the long head of the bicep","Curl upward slowly — supinate (rotate) the wrist as you go — squeeze at the top","Lower with full control back to the fully extended hanging position — do not stop short","This is one of the most effective bicep exercises for long head development — do not rush it"],
+"Meadows Row":["Set up perpendicular to the bench — front foot can be slightly elevated for better angle","Lean your non-working hand on the bench for support — take a wide grip on the dumbbell with the working hand","Row the dumbbell upward and back — the elbow travels past your hip at the top","The perpendicular setup allows the elbow to travel further back than a standard row — greater lat stretch at the bottom","Handle heavy loads here compared to standard rows — the mechanical advantage is significant"],
+"RDL into Row":["Hinge into your RDL position first — flat back, hips pushed back, dumbbells hanging at mid-shin","From that hinged position, row both dumbbells simultaneously to your hips","Hold the hinge throughout the row — do not stand up to complete the row","Lower the dumbbells and then return to standing to complete one full rep","This compound movement loads the entire posterior chain simultaneously — the RDL component must be established before the row begins"],
+"Reverse Lunge":["Step backward — not forward — and lower your rear knee toward the floor","The front foot stays planted and the front shin stays vertical — most of the weight should be in the front leg","Torso stays upright throughout — any forward lean shifts emphasis from the glute to the quad","Return by driving through the front heel to bring the rear foot forward to the start position","This version places more emphasis on the glute of the front leg than a forward lunge"],
+"Step-Up":["Place your entire foot on the bench — not just the toes — heel must be on the surface","Drive through the heel of the elevated foot to stand up — think of pressing the bench away","Do not push off with the rear foot — the movement should be driven entirely by the elevated leg","Stand tall at the top with full hip extension — squeeze the glute","Lower with control — do not just step off — the eccentric is part of the exercise"],
+"Hip Thrust (on bench)":["Set up with the top of your shoulder blades resting on the bench edge — this is above mid-back, not at the neck","Place the dumbbell across your hip crease — hold it firmly with both hands throughout","Feet flat on the floor — position them so your shins are vertical at the top of the movement","Drive your hips upward explosively — squeeze your glutes maximally at the top","At full extension, your torso should be completely horizontal — hold 2 seconds — then lower with control"],
+};
+
+// ── PHASE DATA ─────────────────────────────────────────────────────
+const PHASES=[
+{name:"Phase 1",sub:"Reactivation",weeks:"Weeks 1–4",cls:"p1",sw:1,ew:4,
+ desc:"Rebuild your foundation. Light loads, high reps, full range of motion. Every set ends well before failure — your joints and connective tissue need time to wake up alongside your muscles.",
+ sched:["Upper Body A","Rest","Lower Body A","Rest","Full Body / Core","Rest","Rest"],
+ days:{
+  "Upper Body A":{
+   exercises:[
+    {name:"Dumbbell Bench Press",sets:"3",reps:"12–15",rest:"60s",note:"Slow 3-count descent, pause at chest"},
+    {name:"Dumbbell Row",sets:"3",reps:"12–15",rest:"60s",note:"Full stretch at bottom — elbow drives back"},
+    {name:"Dumbbell Overhead Press",sets:"3",reps:"10–12",rest:"60s",note:"Elbows slightly forward, no flare"},
+    {name:"Lateral Raise",sets:"3",reps:"15",rest:"45s",note:"Light — feel the delt, not the trap"},
+    {name:"Dumbbell Curl",sets:"3",reps:"12–15",rest:"45s",note:"Full extension, supinate at top"},
+    {name:"Skull Crushers",sets:"3",reps:"12–15",rest:"45s",note:"Slow — elbows stay fixed"},
+   ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+  "Lower Body A":{
+   exercises:[
+    {name:"Goblet Squat",sets:"3",reps:"12–15",rest:"60s",note:"Chest up, full depth, knees track toes"},
+    {name:"Romanian Deadlift",sets:"3",reps:"12",rest:"60s",note:"Hinge — hamstring stretch, not lower back"},
+    {name:"Reverse Lunge",sets:"3",reps:"10 each leg",rest:"60s",note:"Knee hovers floor — controlled"},
+    {name:"Step-Up",sets:"3",reps:"10 each leg",rest:"60s",note:"Drive through heel on bench"},
+    {name:"Calf Raise",sets:"3",reps:"20",rest:"30s",note:"Full stretch at bottom, 2s pause at top"},
+    {name:"Glute Bridge",sets:"3",reps:"15",rest:"45s",note:"2s squeeze at top every rep"},
+   ],cool:{neck:false,shoulder:false,golf:true,lower:"Lower Body A"}},
+  "Full Body / Core":{
+   exercises:[
+    {name:"Dumbbell Deadlift",sets:"3",reps:"10",rest:"60s",note:"Hinge — shoulders stay over weight"},
+    {name:"Push-Up",sets:"3",reps:"Max (controlled)",rest:"60s",note:"Chest to floor, full lockout"},
+    {name:"Dumbbell Row",sets:"3",reps:"10",rest:"60s",note:"Hinge position — feel the lats"},
+    {name:"Plank",sets:"3",reps:"30–45s",rest:"45s",note:"Straight line — no hips up or sagging"},
+    {name:"Dead Bug",sets:"3",reps:"8 each side",rest:"45s",note:"Press lower back INTO floor the whole time"},
+    {name:"Side Plank",sets:"2",reps:"20–30s each",rest:"30s",note:"Rigid — don't let hips drop"},
+    {name:"Bird Dog",sets:"2",reps:"10 each side",rest:"30s",note:"Slow and deliberate — no rotation"},
+   ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+ }},
+{name:"Phase 2",sub:"Building",weeks:"Weeks 5–8",cls:"p2",sw:5,ew:8,
+ desc:"Progressive overload begins. Heavier weight, lower reps, 4-day split. Your thoracic spine and shoulders are the engine of the golf swing — they get priority in every flexibility session.",
+ sched:["Push","Pull","Rest","Lower Body B","Upper Body B","Rest","Active Recovery"],
+ days:{
+  "Push":{
+   exercises:[
+    {name:"Dumbbell Bench Press",sets:"4",reps:"8–10",rest:"90s",note:"Add weight from Phase 1 — 2–3 RIR"},
+    {name:"Incline Dumbbell Press",sets:"3",reps:"10",rest:"75s",note:"30–45° bench — upper chest focus"},
+    {name:"Dumbbell Overhead Press",sets:"3",reps:"8–10",rest:"75s",note:"Seated for stability"},
+    {name:"Lateral Raise",sets:"3",reps:"15",rest:"45s",note:"3-count slow negative"},
+    {name:"Skull Crushers",sets:"3",reps:"10–12",rest:"60s",note:"Full stretch at bottom"},
+    {name:"Overhead Tricep Extension",sets:"3",reps:"12",rest:"45s",note:"Long head stretch — both hands one DB"},
+   ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+  "Pull":{
+   exercises:[
+    {name:"Dumbbell Row",sets:"4",reps:"8–10",rest:"75s",note:"Drive elbow up and back — lats not arm"},
+    {name:"Seal Row",sets:"3",reps:"10",rest:"75s",note:"Elbows narrow — full scapular retraction"},
+    {name:"Reverse Fly",sets:"3",reps:"15",rest:"45s",note:"Bent 45° — rear delts slow and deliberate"},
+    {name:"Hammer Curl",sets:"3",reps:"10–12",rest:"60s",note:"Neutral grip — brachialis focus"},
+    {name:"Dumbbell Curl",sets:"3",reps:"10–12",rest:"60s",note:"Full supination at top"},
+    {name:"Face Pull",sets:"3",reps:"15",rest:"45s",note:"Pull to face — external rotation at end"},
+   ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+  "Lower Body B":{
+   exercises:[
+    {name:"Goblet Squat",sets:"4",reps:"10",rest:"90s",note:"Add weight + paused bottom (2s)"},
+    {name:"Romanian Deadlift",sets:"4",reps:"8–10",rest:"90s",note:"Push floor away — don't just stand up"},
+    {name:"Walking Lunge",sets:"3",reps:"10 each leg",rest:"75s",note:"Long stride, torso upright"},
+    {name:"Sumo Squat",sets:"3",reps:"12",rest:"60s",note:"Wide stance, toes out — inner thigh + glute"},
+    {name:"Calf Raise",sets:"4",reps:"15–20",rest:"45s",note:"Single leg if possible — full range"},
+    {name:"Hip Thrust (on bench)",sets:"3",reps:"12",rest:"60s",note:"Explosive up, controlled down"},
+   ],cool:{neck:false,shoulder:false,golf:true,lower:"Lower Body B"}},
+  "Upper Body B":{
+   exercises:[
+    {name:"Dumbbell Bench Press",sets:"3",reps:"10",rest:"75s",note:"Volume day — moderate weight, pump focus"},
+    {name:"Dumbbell Row",sets:"3",reps:"10",rest:"75s",note:"Hinge — feel the lats"},
+    {name:"Arnold Press",sets:"3",reps:"10",rest:"75s",note:"Rotate palms-in to palms-out overhead"},
+    {name:"Incline Dumbbell Curl",sets:"3",reps:"12",rest:"60s",note:"Seated recline — long head stretch"},
+    {name:"Overhead Tricep Extension",sets:"3",reps:"12–15",rest:"45s",note:"Full overhead stretch every rep"},
+    {name:"Face Pull",sets:"3",reps:"15",rest:"45s",note:"Pull to face — external rotation at end"},
+   ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+  "Active Recovery":{
+   exercises:[
+    {name:"World's Greatest Stretch",sets:"1",reps:"5 each side",rest:"—",note:"Hip flexor + thoracic rotation — hold each"},
+    {name:"Cat-Cow to Child's Pose to Down Dog",sets:"1",reps:"10 min continuous",rest:"—",note:"Breathe into every position"},
+    {name:"Hip 90/90",sets:"1",reps:"2 min each side",rest:"—",note:"Internal and external hip rotation"},
+    {name:"Thoracic Rotation (seated)",sets:"1",reps:"12 each side",rest:"—",note:"Rotate as far as breath allows"},
+    {name:"Foam Roll",sets:"1",reps:"10–15 min",rest:"—",note:"Lats and thoracic spine are priority"},
+    {name:"Box Breathing",sets:"1",reps:"5 min",rest:"—",note:"4 in · 4 hold · 4 out · 4 hold"},
+   ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+ }},
+{name:"Phase 3",sub:"Full Strength",weeks:"Weeks 9–13",cls:"p3",sw:9,ew:13,
+ desc:"Heavy compounds, full pliability integrated. Strength and flexibility train together. By week 13 you will have full-range mobility alongside genuine strength across every movement pattern.",
+ sched:["Heavy Push","Heavy Pull","Rest","Heavy Lower","Hypertrophy Upper","Hypertrophy Lower","Active Recovery"],
+ days:{
+  "Heavy Push":{
+   exercises:[
+    {name:"Dumbbell Bench Press",sets:"5",reps:"5–6",rest:"2 min",note:"Heaviest sustainable — max 1 RIR"},
+    {name:"Incline Dumbbell Press",sets:"4",reps:"8",rest:"90s",note:"Upper chest priority"},
+    {name:"Dumbbell Overhead Press",sets:"4",reps:"6–8",rest:"90s",note:"Standing — core braced hard"},
+    {name:"Lateral Raise",sets:"4",reps:"12",rest:"45s",note:"Slight forward lean — better delt contact"},
+    {name:"Close-Grip DB Press",sets:"3",reps:"10",rest:"60s",note:"Palms facing each other — tricep focus"},
+    {name:"Overhead Tricep Extension",sets:"3",reps:"12–15",rest:"45s",note:"Full overhead stretch every rep"},
+   ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+  "Heavy Pull":{
+   exercises:[
+    {name:"Dumbbell Row",sets:"5",reps:"5–6 each side",rest:"90s/side",note:"Heaviest with full ROM"},
+    {name:"Meadows Row",sets:"3",reps:"8 each side",rest:"75s",note:"Heavier unilateral variant"},
+    {name:"RDL into Row",sets:"3",reps:"8",rest:"75s",note:"Hinge + row at bottom — full posterior chain"},
+    {name:"Reverse Fly",sets:"3",reps:"15",rest:"45s",note:"Rear delt — controlled and slow"},
+    {name:"Incline Dumbbell Curl",sets:"4",reps:"8–10",rest:"60s",note:"Full stretch — go heavy"},
+    {name:"Hammer Curl",sets:"3",reps:"10–12",rest:"60s",note:"Alternate or together"},
+   ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+  "Heavy Lower":{
+   exercises:[
+    {name:"Dumbbell Deadlift",sets:"5",reps:"5",rest:"2 min",note:"Both DBs — as heavy as form allows"},
+    {name:"Goblet Squat",sets:"4",reps:"6–8",rest:"90s",note:"Heavy — controlled descent with pause"},
+    {name:"Bulgarian Split Squat",sets:"4",reps:"6–8 each",rest:"90s",note:"Rear foot on bench — the hard one"},
+    {name:"Hip Thrust (on bench)",sets:"4",reps:"10",rest:"75s",note:"Explosive up, controlled down"},
+    {name:"Single-Leg RDL",sets:"3",reps:"8 each",rest:"60s",note:"Balance + posterior chain — slow"},
+    {name:"Calf Raise",sets:"4",reps:"15 each",rest:"45s",note:"Bench edge — maximum range"},
+   ],cool:{neck:false,shoulder:false,golf:true,lower:"Heavy Lower"}},
+  "Hypertrophy Upper":{
+   exercises:[
+    {name:"Dumbbell Bench Press",sets:"4",reps:"10–12",rest:"75s",note:"Moderate — pump and squeeze focus"},
+    {name:"Dumbbell Row",sets:"4",reps:"12 each",rest:"75s",note:"Slow eccentric — 3 count down"},
+    {name:"Arnold Press",sets:"3",reps:"12",rest:"60s",note:"Full rotation — front + side delt"},
+    {name:"Incline Dumbbell Curl",sets:"3",reps:"12–15",rest:"60s",note:"Stretch position — feel it lengthen"},
+    {name:"Overhead Tricep Extension",sets:"3",reps:"12–15",rest:"60s",note:"Long head — full overhead stretch"},
+    {name:"Reverse Fly",sets:"3",reps:"15",rest:"45s",note:"High volume — feel the rear delt"},
+   ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+  "Hypertrophy Lower":{
+   exercises:[
+    {name:"Goblet Squat",sets:"4",reps:"12–15",rest:"75s",note:"Moderate — depth and squeeze focus"},
+    {name:"Walking Lunge",sets:"3",reps:"12 each",rest:"60s",note:"Long stride, upright torso"},
+    {name:"Sumo Squat",sets:"3",reps:"12–15",rest:"60s",note:"Wide, toes out — adductor + glute"},
+    {name:"Leg Curl",sets:"3",reps:"12",rest:"60s",note:"Hold DB with feet — full extension each rep"},
+    {name:"Glute Bridge",sets:"3",reps:"15",rest:"45s",note:"2s pause at top every rep"},
+    {name:"Calf Raise",sets:"4",reps:"20 each",rest:"30s",note:"Maximum range — bench edge"},
+   ],cool:{neck:false,shoulder:false,golf:true,lower:"Hypertrophy Lower"}},
+  "Active Recovery":{
+   exercises:[
+    {name:"Full Body Yoga Flow",sets:"1",reps:"20 min",rest:"—",note:"Sun salutations, warrior series, seated twists"},
+    {name:"Hip 90/90 + Internal Rotation",sets:"1",reps:"2 min each side",rest:"—",note:"Deep hip capsule work"},
+    {name:"Thoracic Extension over Bench",sets:"1",reps:"2 min",rest:"—",note:"Drape upper back over bench edge — breathe"},
+    {name:"Couch Stretch",sets:"1",reps:"90s each side",rest:"—",note:"Hip flexor + quad — crucial for swing and squat"},
+    {name:"PNF Hamstring",sets:"1",reps:"3×10s contract/30s relax each",rest:"—",note:"Contract against resistance, then relax deeper"},
+    {name:"Foam Roll",sets:"1",reps:"10 min",rest:"—",note:"Lats and thoracic spine priority"},
+   ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+ }},
+];
+
+// ══════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════
+const SK='timProgramV4';
+function load(){try{return JSON.parse(localStorage.getItem(SK))||{};}catch(e){return{};}}
+function save(s){try{localStorage.setItem(SK,JSON.stringify(s));}catch(e){}}
+
+let curPhase=0;
+let openDropdownKey=null; // "phaseIdx_dayOffset"
+
+// ══════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════
+function init(){
+  const s=load();
+  if(!s.start){s.start=Date.now();save(s);}
+  updateHeader();
+  selPhase(0);
+}
+
+function updateHeader(){
+  const s=load();
+  const dayNum=Math.min(90,Math.floor((Date.now()-s.start)/86400000)+1);
+  document.getElementById('dayBadge').textContent='Day '+dayNum;
+  const pct=Math.round((dayNum/90)*100);
+  document.getElementById('progPct').textContent=pct+'%';
+  document.getElementById('progFill').style.width=pct+'%';
+  const done=Object.keys(s).filter(k=>k.startsWith('done_')).length;
+  document.getElementById('doneCount').textContent=done;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════════════════════════
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('page-'+id).classList.add('on');
+  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('nav-'+id).classList.add('on');
+  window.scrollTo(0,0);
+}
+
+// ══════════════════════════════════════════════════════════════════
+// PHASE
+// ══════════════════════════════════════════════════════════════════
+function selPhase(idx){
+  curPhase=idx;
+  openDropdownKey=null;
+  document.querySelectorAll('.ptab').forEach((t,i)=>t.classList.toggle('on',i===idx));
+  const ph=PHASES[idx];
+  document.getElementById('phaseDesc').textContent=ph.desc;
+  renderCalendar(ph);
+}
+
+// ══════════════════════════════════════════════════════════════════
+// CALENDAR
+// ══════════════════════════════════════════════════════════════════
+const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DOW_LABELS=['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+function renderCalendar(ph){
+  const s=load();
+  const start=new Date(s.start); start.setHours(0,0,0,0);
+  const today=new Date(); today.setHours(0,0,0,0);
+  const phStartDay=(ph.sw-1)*7;
+  const phEndDay=ph.ew*7;
+
+  // Build day array for phase
+  const days=[];
+  for(let d=phStartDay;d<phEndDay;d++){
+    const date=new Date(start.getTime()+d*86400000);
+    const dow=date.getDay(); // 0=Sun
+    const schedIdx=dow===0?6:dow-1;
+    const dayName=ph.sched[schedIdx];
+    days.push({date,d,dayName,isRest:dayName==='Rest'});
+  }
+
+  // Group by month
+  const months=[];
+  let curMonth=null;
+  days.forEach(day=>{
+    const mk=day.date.getFullYear()*100+day.date.getMonth();
+    if(!curMonth||curMonth.mk!==mk){
+      curMonth={mk,year:day.date.getFullYear(),month:day.date.getMonth(),days:[]};
+      months.push(curMonth);
+    }
+    curMonth.days.push(day);
+  });
+
+  const container=document.getElementById('calContainer');
+  let html='';
+
+  months.forEach(mo=>{
+    const firstDate=mo.days[0].date;
+    const firstDOW=firstDate.getDay(); // 0=Sun
+
+    html+=`<div class="cal-month">
+      <div class="cal-month-hdr">
+        <div class="cal-month-name">${MONTH_NAMES[mo.month]}</div>
+        <div class="cal-month-year">${mo.year}</div>
+      </div>
+      <div class="cal-dow-row">${DOW_LABELS.map(d=>`<div class="cal-dow">${d}</div>`).join('')}</div>`;
+
+    // Build rows — group days into week rows so dropdowns span full width
+    // We need to track what rows exist
+    const firstDayOfMonth=new Date(mo.year,mo.month,1).getDay();
+    const totalCells=firstDayOfMonth + mo.days.length;
+    const numRows=Math.ceil(totalCells/7);
+
+    // Map date string to day object
+    const dayMap={};
+    mo.days.forEach(day=>{dayMap[day.date.getDate()]=day;});
+
+    // Calendar cell array (including empties)
+    const cells=[];
+    for(let i=0;i<firstDayOfMonth;i++) cells.push(null);
+    mo.days.forEach(day=>cells.push(day));
+    while(cells.length%7!==0) cells.push(null);
+
+    // Render row by row
+    for(let row=0;row<cells.length/7;row++){
+      const rowCells=cells.slice(row*7,(row+1)*7);
+      const rowKey=`r_${ph.cls}_${mo.mk}_${row}`;
+
+      html+=`<div class="cal-row-wrap"><div class="cal-row-grid">`;
+      rowCells.forEach((day,col)=>{
+        if(!day){html+=`<div class="cal-cell empty"></div>`;return;}
+        const doneKey=`done_d${day.d}`;
+        const isDone=load()[doneKey]===true;
+        const isToday=day.date.getTime()===today.getTime();
+        const shortName=shortDayName(day.dayName);
+        let tileCls='cal-tile';
+        if(day.isRest) tileCls+=' rest';
+        else tileCls+=' workout';
+        if(isToday) tileCls+=' today';
+        if(isDone) tileCls+=' done';
+        const clickFn=day.isRest
+          ?`toggleRestDone('${doneKey}','${rowKey}')`
+          :`openDayDD('${rowKey}',${day.d},'${day.dayName}',${curPhase})`;
+        html+=`<div class="cal-cell">
+          <div class="${tileCls}" onclick="${clickFn}">
+            <div class="cal-num">${day.date.getDate()}</div>
+            <div class="cal-tag">${shortName}</div>
+            <div class="cal-check">✓</div>
+          </div>
+        </div>`;
+      });
+      html+=`</div>`; // end cal-row-grid
+
+      // Dropdown placeholder — will be populated dynamically
+      html+=`<div class="cal-dropdown" id="${rowKey}"></div>`;
+      html+=`</div>`; // end cal-row-wrap
+    }
+
+    html+=`</div>`; // end cal-month
+  });
+
+  container.innerHTML=html;
+}
+
+function shortDayName(n){
+  return n.replace('Hypertrophy ','Hyp ')
+    .replace('Active Recovery','Active')
+    .replace('Lower Body','Lower')
+    .replace('Upper Body','Upper')
+    .replace('Heavy ','Hvy ')
+    .replace('Full Body / Core','Full');
+}
+
+function toggleRestDone(doneKey,rowKey){
+  const s=load();
+  s[doneKey]=!s[doneKey];
+  save(s);
+  updateHeader();
+  renderCalendar(PHASES[curPhase]);
+}
+
+function openDayDD(rowKey,dayOffset,dayName,phaseIdx){
+  const dd=document.getElementById(rowKey);
+  if(!dd) return;
+  // If already showing this day, close it
+  if(dd.classList.contains('open')&&dd.dataset.dayOffset==dayOffset){
+    dd.classList.remove('open');
+    dd.innerHTML='';
+    openDropdownKey=null;
+    return;
+  }
+  // Close any open dropdown
+  if(openDropdownKey){
+    const prev=document.getElementById(openDropdownKey);
+    if(prev){prev.classList.remove('open');prev.innerHTML='';}
+  }
+  openDropdownKey=rowKey;
+  dd.dataset.dayOffset=dayOffset;
+
+  const ph=PHASES[phaseIdx];
+  const workout=ph.days[dayName];
+  const accentCls=ph.cls+'-accent';
+  const doneKey=`done_d${dayOffset}`;
+  const s=load();
+  const isDone=s[doneKey]===true;
+
+  const preStretches=PRE[dayName]||[];
+  const coolObj=workout.cool;
+
+  // Build date label
+  const start=new Date(s.start); start.setHours(0,0,0,0);
+  const dayDate=new Date(start.getTime()+dayOffset*86400000);
+  const dateLabel=dayDate.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+  let html=`<div class="${accentCls}">
+    <div class="cal-dd-hdr">
+      <div>
+        <div class="cal-dd-title">${dayName}</div>
+        <div class="cal-dd-date">${dateLabel}</div>
+      </div>
+      <div class="cal-dd-close" onclick="closeDayDD('${rowKey}')">×</div>
+    </div>
+    <div class="cal-dd-body">`;
+
+  // Pre-workout stretch section
+  if(preStretches.length){
+    html+=ddSection('pre','Pre-Workout Stretching','var(--amber2)',preStretches.map((st,i)=>`
+      <div class="dd-stretch">
+        <div class="dd-stretch-num">${i+1}</div>
+        <div class="dd-stretch-body">
+          <div class="dd-stretch-name">${st.name}</div>
+          <div class="dd-stretch-dur">${st.dur}</div>
+          <div class="dd-stretch-cues">${st.cues.map(c=>`<div class="dd-stretch-cue">${c}</div>`).join('')}</div>
+        </div>
+      </div>`).join(''));
+  }
+
+  // Exercises section
+  const exHtml=workout.exercises.map((ex,i)=>{
+    const exKey=`exd_${ph.cls}_d${dayOffset}_${i}`;
+    const exDone=s[exKey]===true;
+    const cues=EX_CUES[ex.name]||[];
+    return `<div class="dd-ex ${ph.cls}" id="ddex-${exKey}">
+      <div class="dd-ex-hdr" onclick="toggleDDEx('${exKey}')">
+        <div class="dd-ex-left">
+          <div class="dd-ex-num">Exercise ${i+1}</div>
+          <div class="dd-ex-name">${ex.name}</div>
+          <div class="dd-ex-stats">
+            <div class="dd-stat"><div class="dd-stat-val">${ex.sets}</div><div class="dd-stat-lbl">Sets</div></div>
+            <div class="dd-stat"><div class="dd-stat-val" style="font-size:16px">${ex.reps}</div><div class="dd-stat-lbl">Reps</div></div>
+            <div class="dd-stat"><div class="dd-stat-val" style="font-size:16px">${ex.rest}</div><div class="dd-stat-lbl">Rest</div></div>
+          </div>
+          ${ex.note?`<div class="dd-ex-note">${ex.note}</div>`:''}
+        </div>
+        ${cues.length?`<div class="dd-ex-chev">⌄</div>`:''}
+      </div>
+      ${cues.length?`<div class="dd-ex-cues">
+        <div class="dd-ex-cue-title">Form Cues</div>
+        ${cues.map(c=>`<div class="dd-ex-cue">${c}</div>`).join('')}
+      </div>`:''}
+      <div class="dd-ex-done-row">
+        <button class="ex-done-btn ${exDone?'done':''}" onclick="toggleExDone('${exKey}',event)">
+          ${exDone?'✓ Done':'○ Mark Done'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+  html+=ddSection('ex','Exercises','var(--text)',exHtml);
+
+  // Cooldown sections
+  let coolHtml='';
+  if(coolObj.neck) coolHtml+=coolItems(NECK,'⊙ Neck Protocol','#c080a0');
+  if(coolObj.shoulder) coolHtml+=coolItems(SHOULDER,'◎ Shoulder & Upper Back','var(--blue2)');
+  if(coolObj.golf) coolHtml+=coolItems(GOLF,'⛳ Golf Flexibility','var(--green2)');
+  if(coolObj.lower&&LOWER_COOL[coolObj.lower]) coolHtml+=coolItems(LOWER_COOL[coolObj.lower],'◇ Lower Body Flexibility','#c09040');
+  if(coolHtml) html+=ddSection('cool','Cool-Down & Flexibility','var(--green2)',coolHtml);
+
+  // Done button
+  html+=`<div class="dd-done-row">
+    <button class="dd-done-btn ${isDone?'done':''}" id="dddonebtn-${rowKey}-${dayOffset}" onclick="toggleDayDone('${doneKey}','${rowKey}',${dayOffset},event)">
+      ${isDone?'✓ Workout Complete':'○ Mark Workout Complete'}
+    </button>
+  </div>`;
+
+  html+=`</div></div>`; // cal-dd-body, accentCls
+
+  dd.innerHTML=html;
+  dd.classList.add('open');
+  setTimeout(()=>dd.scrollIntoView({behavior:'smooth',block:'start'}),60);
+}
+
+function ddSection(key,title,color,bodyHtml){
+  return `<div class="dd-section" id="dds-${key}">
+    <div class="dd-section-hdr" onclick="toggleDDSection('${key}')">
+      <div class="dd-section-name" style="color:${color}">${title}</div>
+      <span class="dd-chev">⌄</span>
+    </div>
+    <div class="dd-section-body">${bodyHtml}</div>
+  </div>`;
+}
+
+function coolItems(items,label,color){
+  return `<div style="margin-bottom:12px">
+    <div style="font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:${color};margin-bottom:8px;">${label}</div>
+    ${items.map(item=>`<div class="dd-cool-item">
+      <div class="dd-cool-dot">▸</div>
+      <div>
+        <div class="dd-cool-name">${item.name||item.name}</div>
+        ${(item.dur||item.duration)?`<div class="dd-cool-dur">${item.dur||item.duration}</div>`:''}
+        ${(item.cues&&item.cues.length)?item.cues.map(c=>`<div class="dd-cool-cue">${c}</div>`).join(''):''}
+        ${item.cue?`<div class="dd-cool-cue">${item.cue}</div>`:''}
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function closeDayDD(rowKey){
+  const dd=document.getElementById(rowKey);
+  if(dd){dd.classList.remove('open');dd.innerHTML='';}
+  if(openDropdownKey===rowKey) openDropdownKey=null;
+}
+
+function toggleDDSection(key){
+  const el=document.getElementById('dds-'+key);
+  if(el) el.classList.toggle('open');
+}
+
+function toggleDDEx(exKey){
+  const el=document.getElementById('ddex-'+exKey);
+  if(el) el.classList.toggle('open');
+}
+
+function toggleExDone(exKey,e){
+  e.stopPropagation();
+  const s=load();
+  s[exKey]=!s[exKey];
+  save(s);
+  const btn=e.currentTarget;
+  btn.classList.toggle('done',s[exKey]);
+  btn.textContent=s[exKey]?'✓ Done':'○ Mark Done';
+}
+
+function toggleDayDone(doneKey,rowKey,dayOffset,e){
+  e.stopPropagation();
+  const s=load();
+  s[doneKey]=!s[doneKey];
+  save(s);
+  updateHeader();
+  // Update tile in calendar without full re-render
+  renderCalendar(PHASES[curPhase]);
+  // Re-open the same dropdown
+  const ph=PHASES[curPhase];
+  const start=new Date(s.start); start.setHours(0,0,0,0);
+  const dayDate=new Date(start.getTime()+dayOffset*86400000);
+  const dow=dayDate.getDay();
+  const schedIdx=dow===0?6:dow-1;
+  const dayName=ph.sched[schedIdx];
+  setTimeout(()=>openDayDD(rowKey,dayOffset,dayName,curPhase),50);
+}
+
+function confirmReset(){
+  if(confirm('Reset all progress? This cannot be undone.')){
+    localStorage.removeItem(SK);
+    location.reload();
+  }
+}
+
+init();
+</script>
+</body>
+</html>

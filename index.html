@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tim's Program">
+<title>Tim's Program</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0e0e0e;
+  --surface:#161616;
+  --surface2:#1e1e1e;
+  --border:#2a2a2a;
+  --gold:#c9a84c;
+  --gold-dim:#8a6f2e;
+  --green:#4a7c5f;
+  --green-bright:#5fa878;
+  --blue:#4a6fa5;
+  --blue-bright:#6b9fd4;
+  --rose:#a05a5a;
+  --text:#e8e2d4;
+  --text-dim:#8a8070;
+  --text-muted:#4a4540;
+  --font-serif:'Cormorant Garamond',serif;
+  --font-mono:'DM Mono',monospace;
+  --nav-h:64px;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text)}
+body{font-family:var(--font-serif);font-size:16px;line-height:1.5}
+
+/* Grain overlay */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px 200px;
+}
+
+/* App shell */
+.app-shell{display:flex;flex-direction:column;height:100%;position:relative}
+.page-area{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + 8px)}
+
+/* Header */
+.hdr{background:var(--bg);border-bottom:1px solid var(--border);padding:14px 18px 12px;position:sticky;top:0;z-index:100}
+.hdr-in{display:flex;align-items:center;justify-content:space-between}
+.hdr-title{font-size:1.35rem;font-weight:600;letter-spacing:.02em;color:var(--gold)}
+.hdr-sub{font-family:var(--font-mono);font-size:.65rem;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+.hdr-day{font-family:var(--font-mono);font-size:.7rem;background:var(--surface2);border:1px solid var(--border);color:var(--gold);padding:4px 10px;border-radius:3px;letter-spacing:.06em}
+
+/* Bottom nav */
+.nav{display:flex;background:var(--surface);border-top:1px solid var(--border);height:var(--nav-h);position:fixed;bottom:0;left:0;right:0;z-index:100}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;color:var(--text-muted);font-family:var(--font-mono);font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;transition:color .2s;padding-bottom:env(safe-area-inset-bottom,0)}
+.nav-btn.active{color:var(--gold)}
+.nav-icon{font-size:1.1rem}
+
+/* Pages */
+.page{display:none;padding:0}
+.page.active{display:block}
+
+/* Dashboard */
+.dash-wrap{padding:16px}
+
+/* Date + Day badge row */
+.dash-date-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.dash-date-full{font-family:var(--font-mono);font-size:.68rem;color:var(--text-dim);letter-spacing:.05em}
+.dash-program-day{font-family:var(--font-mono);font-size:.68rem;color:var(--gold);background:var(--surface2);border:1px solid var(--gold-dim);padding:4px 10px;border-radius:3px;letter-spacing:.06em}
+
+/* Today card — color-coded by workout type */
+.today-card{border-radius:4px;padding:14px;margin-bottom:12px;position:relative;overflow:hidden}
+.today-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
+.today-card.type-upper{background:#1c1a12;border:1px solid #5a4a1a}
+.today-card.type-upper::before{background:var(--gold)}
+.today-card.type-lower{background:#161e1a;border:1px solid #2a4a36}
+.today-card.type-lower::before{background:var(--green-bright)}
+.today-card.type-back{background:#12161e;border:1px solid #2a3a5a}
+.today-card.type-back::before{background:var(--blue-bright)}
+.today-card.type-shoulders{background:#1a1218;border:1px solid #4a2a3a}
+.today-card.type-shoulders::before{background:#c084a8}
+.today-card.type-rest{background:var(--surface);border:1px solid var(--border)}
+.today-card.type-rest::before{background:var(--text-muted)}
+.today-type-pill{display:inline-block;font-family:var(--font-mono);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:2px;margin-bottom:6px}
+.type-upper .today-type-pill{background:#2a2210;color:var(--gold)}
+.type-lower .today-type-pill{background:#162a1e;color:var(--green-bright)}
+.type-back .today-type-pill{background:#121a2e;color:var(--blue-bright)}
+.type-shoulders .today-type-pill{background:#221224;color:#c084a8}
+.type-rest .today-type-pill{background:var(--surface2);color:var(--text-muted)}
+.today-day-name{font-size:1.15rem;font-weight:600;color:var(--text);margin-bottom:3px}
+.today-detail{font-size:.82rem;color:var(--text-dim);margin-bottom:2px}
+.today-phase-tag{font-family:var(--font-mono);font-size:.6rem;color:var(--text-muted)}
+.btn-today{display:block;width:100%;margin-top:10px;background:var(--gold-dim);color:var(--bg);border:none;border-radius:3px;padding:10px;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-align:center}
+
+/* Phase card */
+.dash-phase-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden}
+.dash-phase-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold)}
+.dash-phase-label{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px}
+.dash-phase-name{font-size:1.2rem;font-weight:600;color:var(--text);margin-bottom:2px}
+.dash-phase-desc{font-size:.82rem;color:var(--text-dim);line-height:1.4}
+
+/* Phase progress row */
+.phase-progress-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px}
+.phase-pip{border-radius:4px;padding:10px 8px;text-align:center;border:1px solid var(--border);position:relative;overflow:hidden}
+.phase-pip.active-phase{border-color:var(--gold-dim)}
+.phase-pip.done-phase{border-color:var(--green)}
+.phase-pip-label{font-family:var(--font-mono);font-size:.54rem;color:var(--text-muted);letter-spacing:.06em;text-transform:uppercase;display:block}
+.phase-pip-weeks{font-family:var(--font-mono);font-size:.62rem;color:var(--text-dim);display:block;margin-top:1px}
+.phase-pip-bar{height:3px;border-radius:2px;margin-top:6px;background:var(--border);overflow:hidden}
+.phase-pip-fill{height:100%;border-radius:2px;transition:width .5s ease}
+.phase-pip.active-phase .phase-pip-fill{background:var(--gold)}
+.phase-pip.done-phase .phase-pip-fill{background:var(--green-bright)}
+.phase-pip.future-phase .phase-pip-fill{background:var(--text-muted)}
+.phase-pip-pct{font-family:var(--font-mono);font-size:.58rem;display:block;margin-top:3px}
+.phase-pip.active-phase .phase-pip-pct{color:var(--gold)}
+.phase-pip.done-phase .phase-pip-pct{color:var(--green-bright)}
+.phase-pip.future-phase .phase-pip-pct{color:var(--text-muted)}
+
+/* Main stats grid */
+.dash-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:12px 10px;display:flex;align-items:center;gap:10px}
+.stat-icon{font-size:1.1rem;width:24px;text-align:center;flex-shrink:0}
+.stat-text{flex:1}
+.stat-num{font-family:var(--font-mono);font-size:1.3rem;display:block;line-height:1}
+.stat-lbl{font-family:var(--font-mono);font-size:.56rem;color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase;margin-top:2px;display:block}
+.stat-box.gold .stat-num{color:var(--gold)}
+.stat-box.green .stat-num{color:var(--green-bright)}
+.stat-box.blue .stat-num{color:var(--blue-bright)}
+.stat-box.rose .stat-num{color:#c084a8}
+
+/* Overall progress bar */
+.prog-bar-wrap{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:14px;margin-bottom:12px}
+.prog-bar-label{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;display:flex;justify-content:space-between}
+.prog-bar-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:3px;transition:width .6s ease}
+
+/* Week tracker */
+.week-wrap{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:14px;margin-bottom:12px}
+.week-label{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;display:flex;justify-content:space-between}
+.week-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.week-day-cell{aspect-ratio:1;border-radius:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid var(--border);background:var(--surface2)}
+.week-day-cell.wd-done{background:#1a2e1f;border-color:var(--green)}
+.week-day-cell.wd-today{border-color:var(--gold)}
+.week-day-cell.wd-rest{opacity:.4}
+.week-day-cell.wd-future{opacity:.3}
+.week-day-lbl{font-family:var(--font-mono);font-size:.5rem;color:var(--text-muted);letter-spacing:.04em}
+.week-day-cell.wd-done .week-day-lbl{color:var(--green-bright)}
+.week-day-cell.wd-today .week-day-lbl{color:var(--gold)}
+.week-day-dot{width:5px;height:5px;border-radius:50%;margin-top:2px;background:var(--border)}
+.week-day-cell.wd-done .week-day-dot{background:var(--green-bright)}
+.week-day-cell.wd-today .week-day-dot{background:var(--gold)}
+
+
+
+/* Calendar page */
+.cal-wrap{padding:12px}
+.phase-section{margin-bottom:20px}
+.phase-hdr{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);padding:8px 4px;margin-bottom:8px;border-bottom:1px solid var(--border)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px}
+.cal-dow{font-family:var(--font-mono);font-size:.52rem;color:var(--text-muted);text-align:center;padding:2px 0;letter-spacing:.04em}
+.cal-cell{aspect-ratio:1;border-radius:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border:1px solid transparent;transition:border-color .15s,background .15s;font-family:var(--font-mono);background:var(--surface);position:relative}
+.cal-cell.empty{background:transparent;border-color:transparent;cursor:default}
+.cal-cell.rest-day{background:var(--surface);opacity:.5}
+.cal-cell.done{background:#1a2e1f}
+.cal-cell.done .cal-date{color:var(--green-bright)}
+.cal-cell.today-cell{background:#0e1a2e;border-color:var(--blue-bright)!important}
+.cal-cell.today-cell .cal-date{color:var(--blue-bright)}
+.cal-cell.selected{background:#2a2200;border-color:var(--gold)!important}
+.cal-cell.selected .cal-date{color:var(--gold)}
+.cal-date{font-size:.7rem;color:var(--text-dim);line-height:1}
+.cal-dot{width:4px;height:4px;border-radius:50%;margin-top:2px}
+.cal-cell.workout .cal-dot{background:var(--gold-dim)}
+.cal-cell.rest-day .cal-dot{background:var(--text-muted)}
+.cal-cell.done .cal-dot{background:var(--green-bright)}
+
+/* Day dropdown */
+.day-dd{background:var(--surface2);border:1px solid var(--border);border-radius:4px;margin:6px 0 10px;padding:14px;display:none}
+.day-dd.open{display:block}
+.dd-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.dd-title{font-size:1.1rem;font-weight:600;color:var(--gold)}
+.dd-meta{font-family:var(--font-mono);font-size:.62rem;color:var(--text-dim);margin-top:2px}
+.dd-close{background:none;border:none;color:var(--text-dim);font-size:1.1rem;cursor:pointer;padding:0 0 0 8px}
+.dd-section-title{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+
+/* Pre-workout */
+.pre-item{padding:6px 0;border-bottom:1px solid var(--border)}
+.pre-item:last-child{border-bottom:none}
+.pre-name{font-size:.88rem;color:var(--text)}
+.pre-detail{font-family:var(--font-mono);font-size:.6rem;color:var(--text-dim);margin-top:1px}
+.pre-cue{font-size:.78rem;color:var(--text-muted);font-style:italic;margin-top:2px}
+
+/* Exercise rows — expandable */
+.ex-list{width:100%;margin-bottom:8px}
+.ex-row{border-bottom:1px solid var(--border);transition:background .15s}
+.ex-row:last-child{border-bottom:none}
+.ex-row.ex-done{background:#111e14}
+.ex-row-header{display:flex;align-items:center;gap:8px;padding:9px 4px;cursor:pointer;user-select:none}
+.ex-check{width:18px;height:18px;border-radius:3px;border:1px solid var(--border);background:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:background .15s,border-color .15s}
+.ex-check.checked{background:var(--green);border-color:var(--green-bright)}
+.ex-check-mark{font-size:.65rem;color:#fff;display:none}
+.ex-check.checked .ex-check-mark{display:block}
+.ex-header-info{flex:1;min-width:0}
+.ex-name{font-size:.88rem;color:var(--text);line-height:1.2}
+.ex-row.ex-done .ex-name{color:var(--text-muted);text-decoration:line-through;text-decoration-color:var(--text-muted)}
+.ex-chips{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap}
+.ex-chip{font-family:var(--font-mono);font-size:.58rem;color:var(--gold);background:#1e1800;border:1px solid var(--gold-dim);border-radius:2px;padding:1px 5px}
+.ex-expand-arrow{font-family:var(--font-mono);font-size:.7rem;color:var(--text-muted);flex-shrink:0;transition:transform .2s;line-height:1}
+.ex-row.open .ex-expand-arrow{transform:rotate(180deg)}
+.ex-detail-panel{display:none;padding:0 4px 10px 30px}
+.ex-row.open .ex-detail-panel{display:block}
+.ex-detail-note{font-size:.82rem;color:var(--text-dim);font-style:italic;line-height:1.5;border-left:2px solid var(--gold-dim);padding-left:8px}
+
+/* Cooldown */
+.cool-section{margin-top:4px}
+.cool-item{padding:5px 0;border-bottom:1px solid var(--border)}
+.cool-item:last-child{border-bottom:none}
+.cool-name{font-size:.88rem;color:var(--text)}
+.cool-detail{font-family:var(--font-mono);font-size:.6rem;color:var(--blue-bright);margin-top:1px}
+.cool-cue{font-size:.78rem;color:var(--text-muted);font-style:italic;margin-top:2px}
+
+/* Complete button */
+.complete-btn{width:100%;margin-top:14px;padding:11px;border:1px solid var(--green);background:none;color:var(--green-bright);border-radius:3px;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.complete-btn.done{background:#1a2e1f;border-color:var(--green-bright)}
+.complete-btn.rest-done{background:#1a2030;border-color:var(--blue-bright);color:var(--blue-bright);border-color:var(--blue)}
+.rest-complete-btn{width:100%;margin-top:14px;padding:11px;border:1px solid var(--blue);background:none;color:var(--blue-bright);border-radius:3px;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.rest-complete-btn.done{background:#1a2030}
+
+/* Notes page */
+.notes-wrap{padding:14px}
+.note-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:14px;margin-bottom:10px;position:relative;overflow:hidden}
+.note-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--gold-dim)}
+.note-title{font-size:.95rem;font-weight:600;color:var(--gold);margin-bottom:5px}
+.note-text{font-size:.83rem;color:var(--text-dim);line-height:1.55}
+
+/* Rest day card */
+.rest-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:14px}
+.rest-title{font-size:1rem;font-weight:600;color:var(--text-dim);margin-bottom:8px}
+.rest-text{font-size:.83rem;color:var(--text-muted);line-height:1.5;margin-bottom:8px}
+.rest-stretches{list-style:none;padding:0}
+.rest-stretches li{font-size:.82rem;color:var(--text-dim);padding:4px 0;border-bottom:1px solid var(--border)}
+.rest-stretches li:last-child{border-bottom:none}
+.rest-stretches li::before{content:'·';color:var(--gold-dim);margin-right:6px}
+
+/* Back to top */
+.dd-back-top{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:8px;background:none;border:1px solid var(--border);border-radius:3px;color:var(--text-muted);font-family:var(--font-mono);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="app-shell">
+<div class="page-area" id="pageArea">
+
+<div class="hdr">
+  <div class="hdr-in">
+    <div><div class="hdr-title">Tim's Program</div><div class="hdr-sub">90 Days · Lean Muscle</div></div>
+    <div class="hdr-day" id="dayBadge">Day 1</div>
+  </div>
+</div>
+
+<div class="page active" id="pageDash">
+  <div class="dash-wrap">
+
+    <!-- Date + Day -->
+    <div class="dash-date-row">
+      <div class="dash-date-full" id="dashDateFull">—</div>
+      <div class="dash-program-day" id="dashProgramDay">Day 1</div>
+    </div>
+
+    <!-- Today card (color-coded) -->
+    <div class="today-card" id="todayCard">
+      <div class="today-type-pill" id="todayTypePill">—</div>
+      <div class="today-day-name" id="todayDayName">—</div>
+      <div class="today-detail" id="todayDetail">—</div>
+      <div class="today-phase-tag" id="todayPhaseTag">—</div>
+      <button class="btn-today" onclick="goToToday()">Open Today ↓</button>
+    </div>
+
+    <!-- Overall progress bar -->
+    <div class="prog-bar-wrap">
+      <div class="prog-bar-label"><span>Overall Progress</span><span id="progPct">0%</span></div>
+      <div class="prog-bar-track"><div class="prog-bar-fill" id="progFill" style="width:0%"></div></div>
+    </div>
+
+    <!-- Phase progress pips -->
+    <div class="phase-progress-row" id="phasePipRow">
+      <div class="phase-pip future-phase" id="pip0">
+        <span class="phase-pip-label">Phase 1</span>
+        <span class="phase-pip-weeks">Wks 1–4</span>
+        <div class="phase-pip-bar"><div class="phase-pip-fill" id="pipFill0" style="width:0%"></div></div>
+        <span class="phase-pip-pct" id="pipPct0">0%</span>
+      </div>
+      <div class="phase-pip future-phase" id="pip1">
+        <span class="phase-pip-label">Phase 2</span>
+        <span class="phase-pip-weeks">Wks 5–8</span>
+        <div class="phase-pip-bar"><div class="phase-pip-fill" id="pipFill1" style="width:0%"></div></div>
+        <span class="phase-pip-pct" id="pipPct1">0%</span>
+      </div>
+      <div class="phase-pip future-phase" id="pip2">
+        <span class="phase-pip-label">Phase 3</span>
+        <span class="phase-pip-weeks">Wks 9–13</span>
+        <div class="phase-pip-bar"><div class="phase-pip-fill" id="pipFill2" style="width:0%"></div></div>
+        <span class="phase-pip-pct" id="pipPct2">0%</span>
+      </div>
+    </div>
+
+    <!-- This week strip -->
+    <div class="week-wrap">
+      <div class="week-label"><span>This Week</span><span id="weekDoneLabel">0 / 4 sessions</span></div>
+      <div class="week-days" id="weekDays"></div>
+    </div>
+
+    <!-- Stats grid -->
+    <div class="dash-stats">
+      <div class="stat-box gold"><div class="stat-icon">◈</div><div class="stat-text"><span class="stat-num" id="statDone">0</span><span class="stat-lbl">Sessions Done</span></div></div>
+      <div class="stat-box blue"><div class="stat-icon">◷</div><div class="stat-text"><span class="stat-num" id="statLeft">90</span><span class="stat-lbl">Days Left</span></div></div>
+      <div class="stat-box green"><div class="stat-icon">↑</div><div class="stat-text"><span class="stat-num" id="statStreak">0</span><span class="stat-lbl">Day Streak</span></div></div>
+      <div class="stat-box rose"><div class="stat-icon">◎</div><div class="stat-text"><span class="stat-num" id="statWeekDone">0</span><span class="stat-lbl">This Week</span></div></div>
+    </div>
+
+    <!-- Phase info card -->
+    <div class="dash-phase-card" id="dashPhaseCard">
+      <div class="dash-phase-label">Current Phase</div>
+      <div class="dash-phase-name" id="dashPhaseName">—</div>
+      <div class="dash-phase-desc" id="dashPhaseDesc">—</div>
+    </div>
+
+
+  </div>
+</div>
+
+<div class="page" id="pageCal">
+  <div class="cal-wrap" id="calWrap"></div>
+</div>
+
+<div class="page" id="pageNotes">
+  <div class="notes-wrap" id="notesWrap"></div>
+</div>
+
+</div><!-- end page-area -->
+<nav class="nav">
+  <button class="nav-btn active" id="navDash" onclick="showPage('Dash')"><span class="nav-icon">◈</span><span>Dashboard</span></button>
+  <button class="nav-btn" id="navCal" onclick="showPage('Cal')"><span class="nav-icon">▦</span><span>Calendar</span></button>
+  <button class="nav-btn" id="navNotes" onclick="showPage('Notes')"><span class="nav-icon">≡</span><span>Notes</span></button>
+</nav>
+</div><!-- end app-shell -->
+
+<script>
+// ── CONSTANTS ──────────────────────────────────────────────────────────────────
+const PROGRAM_START = new Date(2026, 5, 22); // June 22, 2026
+const SK = 'timProgramV8';
+
+// ── DATA: PRE-WORKOUT STRETCHES ────────────────────────────────────────────────
+const PRE = {
+ "Upper & Chest":[
+  {name:"Doorway Chest Opener",dur:"30s each side",cue:"Stand in doorway, arm at 90°, lean forward until you feel the pec. Don't shrug."},
+  {name:"Cross-Body Shoulder Stretch",dur:"30s each side",cue:"Pull arm across chest, keep shoulder blade down. Feel the rear delt and rotator."},
+  {name:"Thoracic Extension over Foam Roll / Bench",dur:"60s",cue:"Mid-back on edge of bench, arms across chest. Let the upper spine extend over it. Don't let the lumbar hyperextend."},
+  {name:"Neck Side Tilt",dur:"20s each side",cue:"Ear toward shoulder, hand applies gentle pressure. Don't raise the other shoulder."},
+  {name:"Wrist Circles",dur:"30s",cue:"10 slow rotations each direction. Protect the wrists before any pressing."},
+ ],
+ "Lower Body & Glutes":[
+  {name:"90/90 Hip Stretch",dur:"60s each side",cue:"Sit with front leg at 90° and rear leg at 90° to the side. Sit tall — don't lean. Feel the deep hip rotators."},
+  {name:"World's Greatest Stretch",dur:"5 reps each side",cue:"Lunge forward, drop same-side elbow to floor, then rotate and reach up. The gold standard hip + thoracic opener."},
+  {name:"Standing Quad Stretch",dur:"30s each side",cue:"Balance on one leg, heel to glute. Drive hip forward slightly for full rectus femoris stretch."},
+  {name:"Calf Raise & Stretch",dur:"10 reps + 30s stretch",cue:"Full range of motion. Eccentric calf drop off a stair edge warms the Achilles before any squat loading."},
+  {name:"Glute Bridge Hold",dur:"30s",cue:"On the floor: feet hip-width, drive hips up, squeeze hard at top. Activates glutes before loading them."},
+ ],
+ "Back & Biceps":[
+  {name:"Cat-Cow",dur:"10 reps slow",cue:"On hands and knees: exhale to round (cat), inhale to arch (cow). Move the entire spine."},
+  {name:"Child's Pose with Lat Reach",dur:"45s each side",cue:"Reach one arm out to the side — you'll feel the lat stretch along the side body. Critical for rowing ROM."},
+  {name:"Thoracic Rotation (Seated)",dur:"10 reps each side",cue:"Sit cross-legged, hands on shoulders, rotate from the mid-back. Don't let the hips turn."},
+  {name:"Bicep Wall Stretch",dur:"30s each side",cue:"Hand on wall at shoulder height, fingers pointing back. Slowly turn body away until you feel the bicep and anterior shoulder."},
+  {name:"Neck Rotation",dur:"5 reps each side",cue:"Slow, full rotation. Pause 2s at each end. Releases the upper traps before heavy pulling."},
+ ],
+ "Shoulders, Arms & Abs":[
+  {name:"Arm Circles",dur:"30s each direction",cue:"Start small and progressively get bigger. Full shoulder joint warm-up before any overhead movement."},
+  {name:"Band / Light Dumbbell External Rotation",dur:"15 reps each",cue:"Elbow at 90°, rotate out. The rotator cuff must be warm before lateral raises and overhead pressing."},
+  {name:"Thread the Needle",dur:"30s each side",cue:"On hands and knees: slide one arm under the other along the floor. Opens the thoracic and rear shoulder."},
+  {name:"Standing Tricep Stretch",dur:"30s each side",cue:"Reach arm overhead, drop hand to upper back, use other hand to press elbow back. Full long-head stretch."},
+  {name:"Deep Neck Flexion (Chin Tuck)",dur:"10 reps",cue:"Stand or sit tall, gently draw chin straight back (not down). Corrects forward head posture before every session."},
+ ],
+};
+
+// ── DATA: COOLDOWN PROTOCOLS ────────────────────────────────────────────────────
+const COOL = {
+ neck:[
+  {name:"Chin Tuck (Cervical Retraction)",dur:"10 reps × 5s hold",cue:"Gently draw chin straight back — not down. Think 'tall spine.' Non-negotiable every session."},
+  {name:"Neck Side Tilt",dur:"45s each side",cue:"Ear toward shoulder. Apply gentle overpressure with hand. Keep opposite shoulder down."},
+  {name:"Neck Rotation Hold",dur:"30s each side",cue:"Rotate to each side fully. Hold. Don't rush — this is where the upper trap releases."},
+  {name:"Upper Trap / Levator Scapulae Stretch",dur:"30s each side",cue:"Head tilts diagonally toward armpit. Hand on head for gentle overpressure. Relieves the desk-and-drive neck."},
+ ],
+ shoulder:[
+  {name:"Cross-Body Shoulder Stretch",dur:"45s each side",cue:"Pull arm across chest with opposite hand. Shoulder blade stays down. Feel the rear delt and posterior capsule."},
+  {name:"Doorway Chest Opener",dur:"45s each side",cue:"Arm at 90°, lean through the doorway. Vary height to hit pec major and minor."},
+  {name:"Sleeper Stretch",dur:"30s each side",cue:"Lie on side, arm at 90° in front. Gently press the wrist toward the floor. Posterior capsule release — critical for rotator cuff health."},
+  {name:"Internal Rotation Stretch",dur:"30s each side",cue:"Reach arm behind back, palm out. Use opposite hand to gently press wrist up the back."},
+ ],
+ golf:[],
+
+ lower:[
+  {name:"Supine Hamstring Stretch",dur:"60s each side",cue:"On back, leg up — use a towel or strap. Keep the knee as straight as possible. No bouncing."},
+  {name:"Figure-4 Piriformis Stretch",dur:"60s each side",cue:"Ankle crosses opposite knee. Pull both legs toward chest. Breathe and sink deeper with each exhale."},
+  {name:"Pigeon Pose",dur:"90s each side",cue:"Front shin as parallel to the mat as your hips allow. Don't collapse — prop on elbows. Best hip rotator stretch in the program."},
+  {name:"Standing Quad Stretch",dur:"45s each side",cue:"Drive the hip forward for full rectus femoris release. Balance on the working leg."},
+  {name:"Calf Stretch",dur:"45s each side",cue:"Straight leg against a wall for the gastrocnemius. Bent knee for the soleus. Do both."},
+  {name:"Child's Pose",dur:"60s",cue:"Full rest position. Arms overhead or alongside the body. Let the lower back decompress."},
+ ],
+};
+
+// ── DATA: PHASES ────────────────────────────────────────────────────────────────
+const PHASES=[
+ {
+  name:"Phase 1 — Reactivation",
+  weeks:"Weeks 1–4",
+  desc:"Moderate loads, controlled tempo, 4 days per week. Build the movement patterns before adding load. Every session includes a core finisher.",
+  sched:["Upper & Chest","Rest","Lower Body & Glutes","Rest","Back & Biceps","Rest","Shoulders, Arms & Abs"],
+  days:{
+   "Upper & Chest":{
+    exercises:[
+     {name:"Dumbbell Bench Press",sets:"4",reps:"10–12",rest:"75s",note:"Controlled 3-count descent — feel the chest stretch at the bottom"},
+     {name:"Incline Dumbbell Press",sets:"3",reps:"12",rest:"60s",note:"30° incline — upper chest emphasis, don't flare the elbows"},
+     {name:"Chest-Supported Row",sets:"4",reps:"10–12",rest:"75s",note:"Prone on incline bench — full hang at bottom, squeeze at top"},
+     {name:"Reverse Fly",sets:"3",reps:"15",rest:"45s",note:"Rear delts — slow negative, no momentum, hinge forward"},
+     {name:"Lateral Raise",sets:"3",reps:"15",rest:"45s",note:"Lead with elbows not wrists — slight forward lean"},
+     {name:"Plank",sets:"3",reps:"40s",rest:"30s",note:"Core finisher — rigid straight line, don't let hips sag"},
+     {name:"Dead Bug",sets:"3",reps:"8 each side",rest:"30s",note:"Lower back pressed flat to floor — opposite arm and leg extend"},
+    ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+   "Lower Body & Glutes":{
+    exercises:[
+     {name:"Goblet Squat",sets:"4",reps:"12",rest:"75s",note:"Full depth — pause 1s at bottom — chest up throughout"},
+     {name:"Romanian Deadlift",sets:"4",reps:"12",rest:"75s",note:"Hinge at hips — feel the hamstring load — soft knees"},
+     {name:"Walking Lunge",sets:"3",reps:"10 each leg",rest:"60s",note:"Long stride — torso stays upright — front knee tracks toe"},
+     {name:"Hip Thrust (on bench)",sets:"3",reps:"15",rest:"60s",note:"Upper back on bench — 2s squeeze at top every rep"},
+     {name:"Single-Leg RDL",sets:"3",reps:"10 each",rest:"60s",note:"Slow — hip hinge only — control the balance"},
+     {name:"Calf Raise",sets:"4",reps:"20",rest:"30s",note:"Full stretch at bottom — single leg if able — bench edge"},
+    ],cool:{neck:false,shoulder:false,golf:true,lower:true}},
+   "Back & Biceps":{
+    exercises:[
+     {name:"Dumbbell Row",sets:"4",reps:"10–12",rest:"75s",note:"Elbow drives back past hip — full stretch at bottom"},
+     {name:"Chest-Supported Row",sets:"3",reps:"12",rest:"60s",note:"Prone on incline bench — squeeze shoulder blades at top"},
+     {name:"Incline Dumbbell Curl",sets:"3",reps:"12",rest:"60s",note:"Seated on incline — full hang at bottom — long head stretch"},
+     {name:"Hammer Curl",sets:"3",reps:"12",rest:"60s",note:"Neutral grip — brachialis and brachioradialis focus"},
+     {name:"Concentration Curl",sets:"2",reps:"12 each",rest:"45s",note:"Elbow braced on inner thigh — pure isolation — no swinging"},
+     {name:"Hanging Knee Raise (on bench)",sets:"3",reps:"15",rest:"30s",note:"Core finisher — lower abs initiate the movement, not momentum"},
+     {name:"Bicycle Crunch",sets:"3",reps:"16 each side",rest:"30s",note:"Slow — obliques, not neck — elbow to opposite knee"},
+    ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+   "Shoulders, Arms & Abs":{
+    exercises:[
+     {name:"Dumbbell Overhead Press",sets:"4",reps:"10–12",rest:"75s",note:"Seated or standing — brace the core — don't arch the lower back"},
+     {name:"Arnold Press",sets:"3",reps:"12",rest:"60s",note:"Rotate from palms-in at bottom to palms-out at top"},
+     {name:"Lateral Raise",sets:"4",reps:"15",rest:"45s",note:"Light weight — lead with elbows — 1s hold at shoulder height"},
+     {name:"Dumbbell Curl",sets:"3",reps:"12",rest:"60s",note:"Full supination at the top — controlled negative"},
+     {name:"Overhead Tricep Extension",sets:"3",reps:"12",rest:"60s",note:"Both hands on one DB — elbows stay in — feel the long head stretch"},
+     {name:"Tricep Kickback",sets:"3",reps:"15",rest:"45s",note:"Elbow high, locked — full extension — squeeze at top"},
+     {name:"Plank",sets:"3",reps:"40s",rest:"30s",note:"Core finisher — don't let the hips rise or sag"},
+     {name:"V-Up",sets:"3",reps:"10",rest:"30s",note:"Slow and controlled — lower back stays as flat as possible"},
+     {name:"Russian Twist",sets:"3",reps:"15 each side",rest:"30s",note:"Feet off floor — rotate from the core, not the arms"},
+    ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+  }
+ },
+ {
+  name:"Phase 2 — Building",
+  weeks:"Weeks 5–8",
+  desc:"Progressive overload begins. Add weight each session when you hit the top of the rep range. Rest periods tighten. Core finishers get harder.",
+  sched:["Upper & Chest","Rest","Lower Body & Glutes","Rest","Back & Biceps","Rest","Shoulders, Arms & Abs"],
+  days:{
+   "Upper & Chest":{
+    exercises:[
+     {name:"Dumbbell Bench Press",sets:"4",reps:"8–10",rest:"90s",note:"Heavier — 2-count descent — stop 2 reps before failure"},
+     {name:"Incline Dumbbell Press",sets:"4",reps:"10",rest:"75s",note:"Increase weight from Phase 1 — control the eccentric"},
+     {name:"Chest-Supported Row",sets:"4",reps:"10",rest:"75s",note:"Heavier — pull elbows back hard — pause at top"},
+     {name:"Reverse Fly",sets:"3",reps:"12",rest:"45s",note:"Slightly heavier — full ROM — don't shrug"},
+     {name:"Lateral Raise",sets:"4",reps:"12",rest:"45s",note:"Add weight — 1s hold at top every rep"},
+     {name:"Plank",sets:"3",reps:"55s",rest:"30s",note:"Core finisher — progress from Phase 1 hold time"},
+     {name:"Dead Bug",sets:"3",reps:"10 each side",rest:"30s",note:"Slower movement — 3s to lower, 3s to return"},
+     {name:"Push-Up",sets:"2",reps:"max",rest:"60s",note:"Chest finisher — full ROM — note your max each week"},
+    ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+   "Lower Body & Glutes":{
+    exercises:[
+     {name:"Dumbbell Deadlift",sets:"4",reps:"10",rest:"90s",note:"Heavier than Phase 1 — push the floor away — brace hard"},
+     {name:"Goblet Squat",sets:"4",reps:"10",rest:"75s",note:"Add weight — 2s pause at bottom — stay as upright as possible"},
+     {name:"Bulgarian Split Squat",sets:"3",reps:"10 each",rest:"75s",note:"Rear foot elevated — front heel drives through floor"},
+     {name:"Hip Thrust (on bench)",sets:"4",reps:"12",rest:"60s",note:"Heavier — explosive up — controlled down — squeeze hard"},
+     {name:"Reverse Lunge",sets:"3",reps:"10 each",rest:"60s",note:"Add weight — step back — glute emphasis not quad"},
+     {name:"Single-Leg RDL",sets:"3",reps:"10 each",rest:"60s",note:"Heavier — hip hinge — slow negative"},
+     {name:"Calf Raise",sets:"4",reps:"15 each leg",rest:"30s",note:"Single leg — bench edge — full eccentric stretch"},
+    ],cool:{neck:false,shoulder:false,golf:true,lower:true}},
+   "Back & Biceps":{
+    exercises:[
+     {name:"Dumbbell Row",sets:"4",reps:"8–10 each",rest:"90s",note:"Heavy — elbow past hip — full shoulder blade movement"},
+     {name:"Chest-Supported Row",sets:"4",reps:"10",rest:"75s",note:"Heavier — squeeze for 1s at top each rep"},
+     {name:"Renegade Row",sets:"3",reps:"8 each",rest:"75s",note:"Push-up position — row without rotating the hips"},
+     {name:"Incline Dumbbell Curl",sets:"3",reps:"10",rest:"60s",note:"Heavier — full hang — supinate hard at the top"},
+     {name:"Hammer Curl",sets:"3",reps:"10",rest:"60s",note:"Add weight — strict form — no body English"},
+     {name:"Reverse Curl",sets:"2",reps:"12",rest:"45s",note:"Overhand grip — brachioradialis — wrist health for golf"},
+     {name:"Hanging Knee Raise",sets:"3",reps:"18",rest:"30s",note:"Core finisher — progress the rep count from Phase 1"},
+     {name:"Bicycle Crunch",sets:"3",reps:"20 each side",rest:"30s",note:"Slow — obliques fully contract each rep"},
+    ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+   "Shoulders, Arms & Abs":{
+    exercises:[
+     {name:"Dumbbell Overhead Press",sets:"4",reps:"8–10",rest:"90s",note:"Heavier — press to full extension — don't let head jut forward"},
+     {name:"Arnold Press",sets:"3",reps:"10",rest:"75s",note:"Add weight — full rotation — feel the anterior delt load"},
+     {name:"Lateral Raise",sets:"4",reps:"12",rest:"45s",note:"Heavier — 2s hold at top — no swinging"},
+     {name:"Dumbbell Curl",sets:"4",reps:"10",rest:"60s",note:"Heavier — full supination — 2-count negative"},
+     {name:"Overhead Tricep Extension",sets:"3",reps:"10",rest:"60s",note:"Add weight — elbows stay in — full overhead stretch"},
+     {name:"Tricep Kickback",sets:"3",reps:"12",rest:"45s",note:"Heavier — lock elbow — full squeeze at extension"},
+     {name:"Plank",sets:"3",reps:"55s",rest:"30s",note:"Core finisher — match Phase 2 Upper day"},
+     {name:"V-Up",sets:"3",reps:"12",rest:"30s",note:"Add reps from Phase 1"},
+     {name:"Ab Wheel Rollout",sets:"3",reps:"8",rest:"45s",note:"From knees — neutral spine — control the return"},
+    ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+  }
+ },
+ {
+  name:"Phase 3 — Full Strength",
+  weeks:"Weeks 9–13",
+  desc:"Heavy compound work, maximum intensity, full core integration. Push the weights, protect the form, finish every session with the complete cooldown.",
+  sched:["Upper & Chest","Rest","Lower Body & Glutes","Rest","Back & Biceps","Rest","Shoulders, Arms & Abs"],
+  days:{
+   "Upper & Chest":{
+    exercises:[
+     {name:"Dumbbell Bench Press",sets:"5",reps:"6–8",rest:"2 min",note:"Heaviest sustainable — max 1 RIR — control the descent"},
+     {name:"Incline Dumbbell Press",sets:"4",reps:"8",rest:"90s",note:"Heavy — upper chest priority — full ROM"},
+     {name:"Chest-Supported Row",sets:"4",reps:"8",rest:"90s",note:"Heaviest weight — full stretch — hard pull"},
+     {name:"Reverse Fly",sets:"4",reps:"15",rest:"45s",note:"Rear delts — high volume — controlled throughout"},
+     {name:"Lateral Raise",sets:"4",reps:"12",rest:"45s",note:"Peak contraction — 1s hold at top"},
+     {name:"Plank",sets:"3",reps:"70s",rest:"30s",note:"Core finisher — max hold with perfect form"},
+     {name:"Dead Bug",sets:"3",reps:"12 each side",rest:"30s",note:"Slow — back flat throughout"},
+     {name:"Ab Wheel Rollout",sets:"3",reps:"10",rest:"45s",note:"Core finisher — neutral spine — full extension"},
+    ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+   "Lower Body & Glutes":{
+    exercises:[
+     {name:"Dumbbell Deadlift",sets:"5",reps:"5–6",rest:"2 min",note:"Heaviest — push the floor away — brace your entire trunk"},
+     {name:"Goblet Squat",sets:"4",reps:"8",rest:"90s",note:"Heavy — 2s pause at bottom — drive the knees out"},
+     {name:"Bulgarian Split Squat",sets:"4",reps:"8 each",rest:"90s",note:"Heavy — drive through front heel — torso stays upright"},
+     {name:"Hip Thrust (on bench)",sets:"4",reps:"12",rest:"75s",note:"Heaviest DB — explosive up — 1s hold at top"},
+     {name:"Reverse Lunge",sets:"3",reps:"10 each",rest:"60s",note:"Weighted — glute emphasis — long step back"},
+     {name:"Single-Leg RDL",sets:"3",reps:"8 each",rest:"60s",note:"Heavy — slow and controlled — hip hinge only"},
+     {name:"Calf Raise",sets:"4",reps:"15 each",rest:"30s",note:"Single leg — bench edge — full eccentric stretch"},
+    ],cool:{neck:false,shoulder:false,golf:true,lower:true}},
+   "Back & Biceps":{
+    exercises:[
+     {name:"Dumbbell Row",sets:"5",reps:"6–8 each",rest:"90s",note:"Heaviest — elbow past hip — full lat engagement"},
+     {name:"Chest-Supported Row",sets:"4",reps:"8",rest:"90s",note:"Heavier — full ROM — 1s pause at top"},
+     {name:"Renegade Row",sets:"3",reps:"10 each",rest:"75s",note:"Heavier — no hip rotation — brace hard"},
+     {name:"Incline Dumbbell Curl",sets:"4",reps:"8",rest:"60s",note:"Heaviest — full hang — hard supination at top"},
+     {name:"Hammer Curl",sets:"3",reps:"10",rest:"60s",note:"Heavy — strict — brachialis overload"},
+     {name:"Reverse Curl",sets:"3",reps:"10",rest:"45s",note:"Heavier than Phase 2 — wrist and forearm conditioning"},
+     {name:"Hanging Knee Raise",sets:"4",reps:"20",rest:"30s",note:"Core finisher — lower abs every rep"},
+     {name:"Bicycle Crunch",sets:"3",reps:"25 each side",rest:"30s",note:"Max oblique effort — slow — full rotation"},
+    ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+   "Shoulders, Arms & Abs":{
+    exercises:[
+     {name:"Dumbbell Overhead Press",sets:"5",reps:"6–8",rest:"2 min",note:"Heaviest sustainable — brace everything — press to full lockout"},
+     {name:"Arnold Press",sets:"4",reps:"8",rest:"90s",note:"Heavy — full rotation — anterior and medial delt overload"},
+     {name:"Lateral Raise",sets:"4",reps:"12",rest:"45s",note:"Heaviest — 2s hold at top — no swinging"},
+     {name:"Dumbbell Curl",sets:"4",reps:"8",rest:"60s",note:"Heavy — 3-count negative — full supination"},
+     {name:"Overhead Tricep Extension",sets:"4",reps:"8",rest:"60s",note:"Heaviest — full overhead stretch — elbows locked in"},
+     {name:"Tricep Kickback",sets:"3",reps:"12",rest:"45s",note:"Heavy — lock elbow high — explosive extension"},
+     {name:"Plank",sets:"3",reps:"70s",rest:"30s",note:"Core finisher — match Phase 3 Upper day"},
+     {name:"Ab Wheel Rollout",sets:"4",reps:"10",rest:"45s",note:"Add a set from Phase 2 — full extension"},
+     {name:"Russian Twist",sets:"3",reps:"20 each side",rest:"30s",note:"Weighted if possible — slow — full rotation"},
+    ],cool:{neck:true,shoulder:true,golf:true,lower:false}},
+  }
+ },
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let state = {done:{}};
+function loadState(){try{const s=localStorage.getItem(SK);if(s)state=JSON.parse(s);}catch(e){}}
+function saveState(){try{localStorage.setItem(SK,JSON.stringify(state));}catch(e){}}
+
+// ── HELPERS ────────────────────────────────────────────────────────────────────
+function daysBetween(a,b){return Math.floor((b-a)/(1000*60*60*24))}
+function today(){const d=new Date();d.setHours(0,0,0,0);return d;}
+function getProgramDay(date){return daysBetween(PROGRAM_START,date)+1;}
+function getPhaseForDay(dayNum){
+  if(dayNum<=28)return 0;
+  if(dayNum<=56)return 1;
+  return 2;
+}
+function getScheduleForDay(dayNum){
+  const ph=PHASES[getPhaseForDay(dayNum)];
+  const idx=(dayNum-1)%7;
+  return ph.sched[idx];
+}
+function isRest(sched){return sched==='Rest';}
+function dateKey(date){return date.toISOString().split('T')[0];}
+
+// ── DASHBOARD ──────────────────────────────────────────────────────────────────
+function getDayType(sched){
+  if(sched==='Rest')return 'rest';
+  if(sched==='Upper & Chest')return 'upper';
+  if(sched==='Lower Body & Glutes')return 'lower';
+  if(sched==='Back & Biceps')return 'back';
+  if(sched==='Shoulders, Arms & Abs')return 'shoulders';
+  return 'rest';
+}
+function typeLabel(t){
+  const m={upper:'Upper & Chest',lower:'Lower Body & Glutes',back:'Back & Biceps',shoulders:'Shoulders · Arms · Abs',rest:'Rest Day'};
+  return m[t]||t;
+}
+
+function calcStreak(){
+  let streak=0;
+  const t=today();
+  for(let i=0;i<90;i++){
+    const d=new Date(t);
+    d.setDate(d.getDate()-i);
+    const dayNum=getProgramDay(d);
+    if(dayNum<1||dayNum>90)break;
+    const sched=getScheduleForDay(dayNum);
+    // rest days count if logged OR if we haven't broken the streak yet
+    if(state.done[dateKey(d)]){streak++;}
+    else if(isRest(sched)&&i>0){/* rest day not logged — only allow if first unchecked rest */break;}
+    else{break;}
+  }
+  return streak;
+}
+
+function updateDash(){
+  const t=today();
+  const dayNum=Math.min(90,Math.max(1,getProgramDay(t)));
+  const phIdx=getPhaseForDay(dayNum);
+  const ph=PHASES[phIdx];
+  const sched=getScheduleForDay(dayNum);
+  const dtype=getDayType(sched);
+  const doneCount=Object.values(state.done).filter(Boolean).length;
+  const pct=Math.round((doneCount/90)*100);
+
+  // Header badge
+  document.getElementById('dayBadge').textContent='Day '+dayNum;
+
+  // Date row
+  const dateStr=t.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  document.getElementById('dashDateFull').textContent=dateStr;
+  document.getElementById('dashProgramDay').textContent='Day '+dayNum+' of 90';
+
+  // Today card — color class
+  const tc=document.getElementById('todayCard');
+  tc.className='today-card type-'+dtype;
+  document.getElementById('todayTypePill').textContent=typeLabel(dtype);
+  document.getElementById('todayDayName').textContent=isRest(sched)?'Rest Day':sched;
+  document.getElementById('todayDetail').textContent=isRest(sched)
+    ?'Active recovery — light movement, chin tuck protocol, and stretching.'
+    :'4-day lean muscle split · '+ph.weeks;
+  document.getElementById('todayPhaseTag').textContent=ph.name;
+
+  // Progress bar
+  document.getElementById('progPct').textContent=pct+'%';
+  document.getElementById('progFill').style.width=pct+'%';
+
+  // Phase pips
+  [0,1,2].forEach(pi=>{
+    const pip=document.getElementById('pip'+pi);
+    const start=pi*28+1;
+    const end=pi===2?90:pi*28+28;
+    const total=end-start+1;
+    let done=0;
+    for(let d=start;d<=end;d++){
+      const dd=new Date(PROGRAM_START);
+      dd.setDate(dd.getDate()+d-1);
+      if(state.done[dateKey(dd)])done++;
+    }
+    const pipPct=Math.round((done/total)*100);
+    document.getElementById('pipFill'+pi).style.width=pipPct+'%';
+    document.getElementById('pipPct'+pi).textContent=pipPct+'%';
+    pip.className='phase-pip';
+    if(dayNum>=start&&dayNum<=end)pip.classList.add('active-phase');
+    else if(dayNum>end)pip.classList.add('done-phase');
+    else pip.classList.add('future-phase');
+  });
+
+  // This week strip — find Monday of current week within program
+  const weekDaysEl=document.getElementById('weekDays');
+  weekDaysEl.innerHTML='';
+  const dowToday=t.getDay(); // 0=Sun
+  const monOffset=dowToday===0?-6:1-dowToday;
+  const monday=new Date(t);
+  monday.setDate(t.getDate()+monOffset);
+  const DOWS=['M','T','W','T','F','S','S'];
+  let weekWorkoutsDone=0,weekWorkoutsTotal=0;
+  for(let i=0;i<7;i++){
+    const d=new Date(monday);
+    d.setDate(monday.getDate()+i);
+    const dn=getProgramDay(d);
+    const inProgram=dn>=1&&dn<=90;
+    const dk=dateKey(d);
+    const isT=dk===dateKey(t);
+    const done=!!state.done[dk];
+    const sc=inProgram?getScheduleForDay(dn):'Rest';
+    const rest=isRest(sc)||!inProgram;
+    if(!rest){weekWorkoutsTotal++; if(done)weekWorkoutsDone++;}
+    const cell=document.createElement('div');
+    cell.className='week-day-cell'+(done?' wd-done':rest?' wd-rest':dn>dayNum?' wd-future':'')+(isT?' wd-today':'');
+    cell.innerHTML=`<span class="week-day-lbl">${DOWS[i]}</span><div class="week-day-dot"></div>`;
+    weekDaysEl.appendChild(cell);
+  }
+  document.getElementById('weekDoneLabel').textContent=weekWorkoutsDone+' / '+weekWorkoutsTotal+' sessions';
+
+  // Stats
+  document.getElementById('statDone').textContent=doneCount;
+  document.getElementById('statLeft').textContent=Math.max(0,90-dayNum+1);
+  document.getElementById('statStreak').textContent=calcStreak();
+  document.getElementById('statWeekDone').textContent=weekWorkoutsDone;
+
+  // Phase info
+  document.getElementById('dashPhaseName').textContent=ph.name;
+  document.getElementById('dashPhaseDesc').textContent=ph.desc;
+}
+
+function goToToday(){
+  showPage('Cal');
+  setTimeout(()=>{
+    const t=today();
+    const dayNum=getProgramDay(t);
+    const phIdx=getPhaseForDay(Math.max(1,Math.min(90,dayNum)));
+    const sectionId='phase-section-'+phIdx;
+    const sec=document.getElementById(sectionId);
+    if(sec)sec.scrollIntoView({behavior:'smooth'});
+    // find and open today's cell
+    const key=dateKey(t);
+    const cell=document.querySelector('[data-key="'+key+'"]');
+    if(cell){setTimeout(()=>cell.click(),400);}
+  },100);
+}
+
+// ── CALENDAR ──────────────────────────────────────────────────────────────────
+let openDDKey=null;
+
+function renderCalendar(){
+  const wrap=document.getElementById('calWrap');
+  wrap.innerHTML='';
+
+  // Build all 90 days
+  const days=[];
+  for(let i=0;i<90;i++){
+    const d=new Date(PROGRAM_START);
+    d.setDate(d.getDate()+i);
+    const dayNum=i+1;
+    const phIdx=getPhaseForDay(dayNum);
+    const sched=getScheduleForDay(dayNum);
+    days.push({date:d,dayNum,phIdx,sched,key:dateKey(d)});
+  }
+
+  // Group by phase
+  const phases=[[],[],[]];
+  days.forEach(d=>phases[d.phIdx].push(d));
+
+  const t=today();
+  const todayKey=dateKey(t);
+
+  phases.forEach((phaseDays,pi)=>{
+    const ph=PHASES[pi];
+    const section=document.createElement('div');
+    section.className='phase-section';
+    section.id='phase-section-'+pi;
+
+    const hdr=document.createElement('div');
+    hdr.className='phase-hdr';
+    hdr.textContent=ph.name+' · '+ph.weeks;
+    section.appendChild(hdr);
+
+    // DOW labels
+    const dowRow=document.createElement('div');
+    dowRow.className='cal-grid';
+    ['M','T','W','T','F','S','S'].forEach(d=>{
+      const c=document.createElement('div');
+      c.className='cal-dow';c.textContent=d;
+      dowRow.appendChild(c);
+    });
+    section.appendChild(dowRow);
+
+    // Grid
+    const grid=document.createElement('div');
+    grid.className='cal-grid';
+
+    // Leading empty cells based on first day of week (Mon=0)
+    const firstDay=phaseDays[0].date;
+    const dow=firstDay.getDay(); // 0=Sun
+    const offset=(dow===0?6:dow-1); // Mon-based
+    for(let e=0;e<offset;e++){
+      const ec=document.createElement('div');
+      ec.className='cal-cell empty';
+      grid.appendChild(ec);
+    }
+
+    phaseDays.forEach(day=>{
+      const cell=document.createElement('div');
+      const isToday=day.key===todayKey;
+      const isDone=!!state.done[day.key];
+      const isRestDay=isRest(day.sched);
+
+      cell.className='cal-cell'+(isRestDay?' rest-day':' workout')+(isDone?' done':'')+(isToday?' today-cell':'');
+      cell.dataset.key=day.key;
+      cell.dataset.daynum=day.dayNum;
+
+      const dateEl=document.createElement('div');
+      dateEl.className='cal-date';
+      dateEl.textContent=day.date.getDate();
+      cell.appendChild(dateEl);
+
+      const dot=document.createElement('div');
+      dot.className='cal-dot';
+      cell.appendChild(dot);
+
+      cell.addEventListener('click',()=>toggleDD(day,cell,section));
+      grid.appendChild(cell);
+    });
+
+    section.appendChild(grid);
+
+    // Placeholder for dropdown
+    const ddSlot=document.createElement('div');
+    ddSlot.id='dd-slot-'+pi;
+    section.appendChild(ddSlot);
+
+    wrap.appendChild(section);
+  });
+}
+
+function toggleDD(day,cell,section){
+  const key=day.key;
+  // If same cell is open, close it
+  if(openDDKey===key){
+    closeDD();
+    return;
+  }
+  closeDD();
+  openDDKey=key;
+  cell.classList.add('selected');
+
+  const dd=buildDD(day);
+  const slot=document.getElementById('dd-slot-'+day.phIdx);
+  slot.appendChild(dd);
+  dd.classList.add('open');
+
+  setTimeout(()=>cell.scrollIntoView({behavior:'smooth',block:'start'}),50);
+}
+
+function closeDD(){
+  if(!openDDKey)return;
+  document.querySelectorAll('.cal-cell.selected').forEach(c=>c.classList.remove('selected'));
+  document.querySelectorAll('.day-dd').forEach(d=>d.remove());
+  openDDKey=null;
+}
+
+function buildDD(day){
+  const dd=document.createElement('div');
+  dd.className='day-dd';
+  const phIdx=day.phIdx;
+  const ph=PHASES[phIdx];
+  const sched=day.sched;
+  const rest=isRest(sched);
+  const isDone=!!state.done[day.key];
+
+  const dateStr=day.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+  let html=`<div class="dd-head">
+    <div>
+      <div class="dd-title">${rest?'Rest Day':sched}</div>
+      <div class="dd-meta">Day ${day.dayNum} · ${dateStr} · ${ph.weeks}</div>
+    </div>
+    <button class="dd-close" onclick="closeDD()">✕</button>
+  </div>`;
+
+  if(rest){
+    html+=`<div class="rest-card">
+      <div class="rest-title">Active Recovery</div>
+      <div class="rest-text">Rest days are where the adaptation happens. Keep movement light. Do the chin tuck protocol today — it takes 2 minutes and pays off daily.</div>
+      <ul class="rest-stretches">
+        <li>Chin Tuck (Cervical Retraction) — 10 reps × 5s hold</li>
+        <li>Neck Side Tilt — 45s each side</li>
+        <li>Hip Flexor Lunge Stretch — 60s each side</li>
+        <li>Light walk 15–20 min if energy allows</li>
+        <li>Child's Pose — 60s</li>
+      </ul>
+    </div>`;
+
+    const btnClass='rest-complete-btn'+(isDone?' done':'');
+    html+=`<button class="${btnClass}" id="completeBtn" onclick="toggleDone('${day.key}')">${isDone?'✓ Rest Day Logged':'Log Rest Day'}</button>`;
+  } else {
+    // Pre-workout
+    const pre=PRE[sched]||[];
+    html+=`<div class="dd-section-title">Pre-Workout Stretches</div>`;
+    pre.forEach(s=>{
+      html+=`<div class="pre-item">
+        <div class="pre-name">${s.name}</div>
+        <div class="pre-detail">${s.dur}</div>
+        <div class="pre-cue">${s.cue}</div>
+      </div>`;
+    });
+
+    // Exercises
+    html+=`<div class="dd-section-title">Exercises</div><div class="ex-list" id="exList">`;
+
+    const dayData=ph.days[sched];
+    dayData.exercises.forEach((ex,idx)=>{
+      const exKey=day.key+'_ex'+idx;
+      const exDone=!!state.done[exKey];
+      html+=`<div class="ex-row${exDone?' ex-done':''}" id="exrow_${idx}">
+        <div class="ex-row-header" onclick="toggleExRow(${idx})">
+          <div class="ex-check${exDone?' checked':''}" id="excheck_${idx}" onclick="event.stopPropagation();toggleExDone('${day.key}',${idx},${dayData.exercises.length})">
+            <span class="ex-check-mark">✓</span>
+          </div>
+          <div class="ex-header-info">
+            <div class="ex-name">${ex.name}</div>
+            <div class="ex-chips">
+              <span class="ex-chip">${ex.sets} sets</span>
+              <span class="ex-chip">${ex.reps}</span>
+              <span class="ex-chip">${ex.rest} rest</span>
+            </div>
+          </div>
+          <span class="ex-expand-arrow">▾</span>
+        </div>
+        <div class="ex-detail-panel">
+          <div class="ex-detail-note">${ex.note}</div>
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+
+    // Cooldown
+    const cool=dayData.cool;
+    html+=`<div class="dd-section-title">Cooldown</div><div class="cool-section">`;
+    const coolItems=[];
+    if(cool.neck)COOL.neck.forEach(c=>coolItems.push(c));
+    if(cool.shoulder)COOL.shoulder.forEach(c=>coolItems.push(c));
+    if(cool.golf)COOL.golf.forEach(c=>coolItems.push(c));
+    if(cool.lower)COOL.lower.forEach(c=>coolItems.push(c));
+    coolItems.forEach(c=>{
+      html+=`<div class="cool-item">
+        <div class="cool-name">${c.name}</div>
+        <div class="cool-detail">${c.dur}</div>
+        <div class="cool-cue">${c.cue}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+
+    const btnClass='complete-btn'+(isDone?' done':'');
+    html+=`<button class="${btnClass}" id="completeBtn" onclick="toggleDone('${day.key}')">${isDone?'✓ Session Complete':'Mark Session Complete'}</button>`;
+  }
+
+  html+=`<button class="dd-back-top" onclick="document.getElementById('pageArea').scrollTo({top:0,behavior:'smooth'})">↑ Back to Top</button>`;
+
+  dd.innerHTML=html;
+  return dd;
+}
+
+function toggleExRow(idx){
+  const row=document.getElementById('exrow_'+idx);
+  if(!row)return;
+  row.classList.toggle('open');
+}
+
+function toggleExDone(dayKey,idx,total){
+  const exKey=dayKey+'_ex'+idx;
+  state.done[exKey]=!state.done[exKey];
+  if(!state.done[exKey])delete state.done[exKey];
+  saveState();
+
+  // Update checkbox UI
+  const check=document.getElementById('excheck_'+idx);
+  const row=document.getElementById('exrow_'+idx);
+  if(check){
+    if(state.done[exKey]){check.classList.add('checked');if(row)row.classList.add('ex-done');}
+    else{check.classList.remove('checked');if(row)row.classList.remove('ex-done');}
+  }
+
+  // Auto-complete the session if all exercises are checked
+  const allDone=[...Array(total).keys()].every(i=>!!state.done[dayKey+'_ex'+i]);
+  if(allDone&&!state.done[dayKey]){
+    state.done[dayKey]=true;
+    saveState();
+    const btn=document.getElementById('completeBtn');
+    if(btn){btn.classList.add('done');btn.textContent='✓ Session Complete';}
+    const cell=document.querySelector('[data-key="'+dayKey+'"]');
+    if(cell)cell.classList.add('done');
+  }
+  updateDash();
+}
+
+
+function toggleDone(key){
+  state.done[key]=!state.done[key];
+  if(!state.done[key])delete state.done[key];
+  saveState();
+  // Update the button
+  const btn=document.getElementById('completeBtn');
+  if(btn){
+    const isDone=!!state.done[key];
+    // detect rest vs workout
+    if(btn.classList.contains('rest-complete-btn')||btn.classList.contains('complete-btn')){
+      const isR=btn.classList.contains('rest-complete-btn');
+      btn.textContent=isDone?(isR?'✓ Rest Day Logged':'✓ Session Complete'):(isR?'Log Rest Day':'Mark Session Complete');
+      if(isDone)btn.classList.add('done');else btn.classList.remove('done');
+    }
+  }
+  // Update calendar cell
+  const cell=document.querySelector('[data-key="'+key+'"]');
+  if(cell){
+    if(state.done[key])cell.classList.add('done');else cell.classList.remove('done');
+  }
+  updateDash();
+}
+
+// ── NOTES ─────────────────────────────────────────────────────────────────────
+function renderNotes(){
+  const wrap=document.getElementById('notesWrap');
+  wrap.innerHTML=`
+  <div class="note-card"><div class="note-title">Progressive Overload</div><div class="note-text">Add 2–5 lbs when you hit the top of a rep range for two consecutive sessions with clean form. Consistent overload over 13 weeks drives results — not any single workout.</div></div>
+  <div class="note-card"><div class="note-title">Lean Muscle, Not Bulk</div><div class="note-text">Moderate weight, higher rep ranges on accessories, strict form, and short rest on isolation work. Eat at a small surplus of 200–300 calories above maintenance with 0.8–1g protein per lb of bodyweight. You cannot build lean muscle in an aggressive deficit.</div></div>
+  <div class="note-card"><div class="note-title">Core Finishers Are Not Optional</div><div class="note-text">Every session ends with a core finisher. The core is the foundation of every compound movement — a trained core directly improves your bench, row, squat, and deadlift, and protects the lower back under load.</div></div>
+  <div class="note-card"><div class="note-title">The 4-Day Structure</div><div class="note-text">Upper & Chest and Back & Biceps alternate with Lower Body & Glutes and Shoulders/Arms/Abs. Each muscle group gets at least 48 hours of recovery before being trained again — the minimum required for repair and growth.</div></div>
+  <div class="note-card"><div class="note-title">Flexibility Is Still the Program</div><div class="note-text">The pre-workout stretches and full cooldown are mandatory — not supplemental. Skipping flexibility work is where returning athletes get hurt and lose progress, especially at Phase 3 loads.</div></div>
+  <div class="note-card"><div class="note-title">Reps in Reserve (RIR)</div><div class="note-text">Phase 1: stop 3–4 reps before failure every set. Phase 2: 2–3 reps in reserve. Phase 3: 1–2 reps on strength sets, closer to failure on hypertrophy work. RIR protects your connective tissue while it adapts — it is not weakness, it is strategy.</div></div>
+  <div class="note-card"><div class="note-title">Chin Tuck — Every Single Day</div><div class="note-text">Cervical retraction takes 2 minutes and should be done every day including rest days. Forward head posture from desk work compresses the cervical spine and limits your backswing. Fix it daily.</div></div>
+  <div class="note-card"><div class="note-title">Sleep & Nutrition</div><div class="note-text">Target 0.8–1g of protein per lb of bodyweight daily. Treat 8 hours of sleep as a non-negotiable part of the program — muscle, tendon, and connective tissue repair happens at rest, not in the gym.</div></div>
+  <div class="note-card"><div class="note-title">Joint Pain vs. Soreness</div><div class="note-text">DOMS in weeks 1–2 is expected and a good sign. Sharp or persistent pain in a joint — knee, shoulder, elbow, or lower back — is a different signal entirely. Rest that day and reassess. One missed session costs nothing. An injury costs weeks.</div></div>
+  <div class="note-card"><div class="note-title">Equipment</div><div class="note-text">Bench + dumbbells up to 50 lbs + open mat area. When you hit the ceiling on a dumbbell, slow the tempo (3-second eccentric), reduce rest periods, or add a mechanical drop set to continue progressing without heavier weights.</div></div>
+  `;
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page'+name).classList.add('active');
+  document.getElementById('nav'+name).classList.add('active');
+  document.getElementById('pageArea').scrollTop=0;
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+loadState();
+updateDash();
+renderCalendar();
+renderNotes();
+</script>
+</body>
+</html>
